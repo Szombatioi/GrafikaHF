@@ -36,6 +36,7 @@
 //TODO: kommentek törlése, nyilatkozat elolvasása, források megjelölése
 //TODO: vetített koordináták fv., azokat kell a vectorba tenni
 //TODO: vetítés z koordinátája?
+//TODO: a körök megjelenítése legyen simán euklideszi? Elvégre nem mosódhatnak el a körök
 
 
 struct Point {
@@ -120,9 +121,14 @@ public:
 
 	std::vector<vec2> project(const std::vector<vec3> points) { //TODO
 		std::vector<vec2> projected;
+		int i = 0;
 		for (auto& point : points) {
-			projected.push_back(vec2(point.x / (point.z + 1.0), point.y / (point.z + 1.0)));
+			//TODO
+			vec2 temp = vec2(point.x / (point.z + 1.0), point.y / (point.z + 1.0));
+			printf("%d: %.2f, %.2f\n", ++i, temp.x, temp.y);
+			projected.push_back(temp);
 		}
+		puts("-------------");
 		return projected;
 	}
 
@@ -166,11 +172,14 @@ public:
 			float phi = i * 2.0f * M_PI / nOfCirclePoints;
 			float x = centerPoint.x + cosf(phi) * radius;
 			float y = centerPoint.y + sinf(phi) * radius;
-			circlePoints.push_back(vec3(x, y, 0)); //TODO
+			circlePoints.push_back(vec3(x, y, centerPoint.z)); //TODO
 		}
 	}
 	void draw(vec3 colors) {
 		renderer->DrawGPU(GL_TRIANGLE_FAN, circlePoints, colors);
+	}
+	float getR() {
+		return radius;
 	}
 };
 
@@ -182,7 +191,7 @@ protected:
 public:
 	Hami() {}
 	Hami(vec3 start, vec3 dir) : centerCircle(start, 0.2f), direction(dir) {
-		leftEye = Circle(pointByDirAndDist(), 0.1);
+		//leftEye = Circle(pointByDirAndDist(position, rotateVector(direction, 0.01), centerCircle.getR()), 0.1);
 	}
 
 	virtual void move() { 
@@ -200,7 +209,7 @@ public:
 	}
 
 	void rotate(boolean right, float phi = 0.1f) {
-		direction = Geometry::rotateVector(direction, right ? phi : -phi);
+		direction = rotateVector(direction, right ? phi : -phi);
 	}
 
 	void animateMouth() {
@@ -236,25 +245,27 @@ void onInitialization() {
 	//printf("(2,2,3) %s\t(2,-2,0) %s\n", validPoint(vec3(0,0,1)) ? "valid" : "invalid", validVector(vec3(1,1,0), vec3(0, 0, 1)) ? "valid" : "invalid");
 
 	renderer = new Renderer();
-	center = Circle();
-	pirosHami = PirosHami(vec3(0, 0, 1), vec3());
+
+	/*glPointSize(10.0f);  //////////test: a vetítésem jó
+	line.push_back(vec3(1, 1, sqrt(3)));
+	line.push_back(vec3(0,0,1));
+	line.push_back(vec3(2,2,3));
+	line.push_back(vec3(3,3,sqrt(19)));*/
+	//center = Circle();
+	pirosHami = PirosHami(vec3(0, 0, 1), vec3(1,1,0));
 	zoldHami = ZoldHami(vec3(2, 2, 3), vec3(2, -2, 0));
 
-	/*p = vec2(0, 0);
-	v = vec2(1, 2);
-	for (float t = 0; t < 100; t += 0.01) {
-		line.push_back(vec2(p + normalize(v)*t));
-	}*/
+	
 }
 
 void onDisplay() {
 	glClearColor(0, 0, 0, 0);
 	glClear(GL_COLOR_BUFFER_BIT);
 	//center.draw(vec3(0.5f, 0.5f, 0.5f));
-	pirosHami.draw(vec3(1,0,0));
-	//zoldHami.draw(vec3(0,1,0));
+	//pirosHami.draw(vec3(1,0,0));
+	zoldHami.draw(vec3(0,1,0));
 
-	//renderer->DrawGPU(GL_POINTS, line, vec3(1,1,1));
+	//renderer->DrawGPU(GL_POINTS, line, vec3(1,1,1)); //test
 
 	//zoldHami.move(); //TODO: lehet nem ide kéne tenni
 	glutSwapBuffers();
