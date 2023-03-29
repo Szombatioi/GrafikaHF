@@ -45,7 +45,7 @@ class Geometria {
 	5. Egy pontban egy vektor elforgatása adott szöggel.
 	6. Egy közelítő pont és sebességvektorhoz a geometria szabályait teljesítő, közeli pont és sebesség választása.
 	*/
-
+public:
 	//1.
 	static vec3 iranyraMeroleges(vec3 vector) {
 		vec3 temp(0, 0, -1);
@@ -54,7 +54,7 @@ class Geometria {
 
 	//2.
 	static vec3 pontHelye(vec3 point, vec3 vector, float delta_t) {
-		return vec3(point * cosh(delta_t) + normalize(vector)*sinh(delta_t));
+		return vec3( point * cosh(delta_t) + normalize(vector) * sinh(delta_t) );
 	}
 
 	//3. ? 
@@ -69,8 +69,7 @@ class Geometria {
 		return vec3(vector * cos(angle) + iranyraMeroleges(vector)*sin(angle));
 	}
 
-	//6. ?
-
+	//6. 
 
 };
 
@@ -106,6 +105,17 @@ public:
 		glEnableVertexAttribArray(0);
 		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, NULL);
 	}
+
+	std::vector<vec2> project(const std::vector<vec3> points) { //TODO
+		std::vector<vec2> res;
+		for (auto x : points) res.push_back(vec2(x.x, x.y));
+		return res;
+	}
+
+	vec2 project(const vec3 point) { //TODO
+		return vec2(point.x, point.y);
+	}
+
 	void DrawGPU(int type, std::vector<vec2> vertices, vec3 color) {
 		setUniform(color, "color");
 		glBindVertexArray(vao);
@@ -119,30 +129,56 @@ public:
 };
 
 Renderer* renderer;
-std::vector<vec2> circlePoints;
 const int nOfCirclePoints = 30;
 long t;
 
-class Hami {
-protected:
-	std::vector<vec3> nyal;
-	vec3 pos, vec;
-	vec2 proj;
-	//float r; //nem kell, a pontok vetítése megoldja
-	std::vector<vec2> circlePoints;
+class Circle {
+	vec3 centerPoint;
+	std::vector<vec3> circlePoints;
+	float radius;
 public:
-	Hami(vec3 start) {
+	Circle(vec3 c = vec3(0,0,0), float r = 1) : centerPoint(c), radius(r) {
 		for (int i = 0; i < nOfCirclePoints; i++) {
 			float phi = i * 2.0f * M_PI / nOfCirclePoints;
-			this->circlePoints.push_back(vec2(start.x+cosf(phi)/5, start.y+sinf(phi)/5)); //TODO: sugár változzon
+			circlePoints.push_back(vec3(centerPoint.x + cosf(phi)*radius, centerPoint.y+sinf(phi)*radius, 0));
 		}
 	}
+	void draw(vec3 colors) {
+		renderer->DrawGPU(GL_TRIANGLE_FAN, renderer->project(circlePoints), colors);
+	}
+};
 
-	virtual void move(){}
-	virtual void draw(){}
+class Hami {
+protected:
+	std::vector<vec2> slimePoints;
+	vec3 position, direction;
+	//float r; //nem kell, a pontok vetítése megoldja
+	std::vector<vec2> projectedPoints;
+	Circle centerCircle, leftEye, rightEye, leftPupil, rightPupil, mouth;
+public:
+	Hami() {}
+	Hami(vec3 start, vec3 dir = vec3(0,0,0)) {
+		centerCircle = Circle(start, 0.2f);
+		direction = dir;
+	}
 
-	void rotate(float phi = 0.1f) {
+	virtual void move() { 
+		slimePoints.push_back(renderer->project(position)); //TODO: check if contains
+	}
+	virtual void draw(vec3 color){
+		animateMouth();
+		centerCircle.draw(color);
+		renderer->DrawGPU(GL_POINTS, slimePoints, vec3(1, 1, 1));
+		/*leftEye.draw(vec3(1,1,1));
+		rightEye.draw(vec3(1, 1, 1));
+		rightPupil.draw(vec3(1, 1, 1));
+		leftPupil.draw(vec3(1, 1, 1));
+		mouth.draw(vec3(0,0,0));*/
+	}
 
+	void rotate(boolean right, float phi = 0.1f) {
+		direction = Geometria::rotateVector(direction, right ? phi : -phi);
+		printf("%.2f, %.2f, %.2f\n", direction.x, direction.y, direction.z);
 	}
 
 	void animateMouth() {
@@ -152,41 +188,38 @@ public:
 
 class PirosHami : public Hami {
 public:
-	PirosHami(vec2 start = vec2(0, 0)) : Hami(start) {}
-	void draw() {
-		renderer->DrawGPU(GL_TRIANGLE_FAN, this->circlePoints, vec3(1, 0, 0));
-	}
-	void move(){}
+	PirosHami() {}
+	PirosHami(vec3 start, vec3 dir) : Hami(start, dir) {}
+	void move() { printf("Red hami moves\n"); }
 };
 
 class ZoldHami : public Hami {
 public:
-	ZoldHami(vec2 start = vec2(0, 0)) : Hami(start){}
-	void draw() {
-		renderer->DrawGPU(GL_TRIANGLE_FAN, this->circlePoints, vec3(0, 1, 0));
+	ZoldHami() {}
+	ZoldHami(vec3 start, vec3 dir) : Hami(start, dir) {}
+	void move() {
+		Hami::move();
 	}
-	void move() {}
 };
 
+Circle center;
 PirosHami pirosHami;
 ZoldHami zoldHami;
 
 void onInitialization() {
 	renderer = new Renderer();
-	for (int i = 0; i < nOfCirclePoints; i++) {
-		float phi = i * 2.0f * M_PI / nOfCirclePoints;
-		circlePoints.push_back(vec2(cosf(phi), sinf(phi)));
-	}
-	pirosHami = PirosHami();
-	zoldHami = ZoldHami(vec2(0.3f, 0.2f));
+	center = Circle();
+	pirosHami = PirosHami(vec3(1,0,1), vec3(-1,0,0));
+	zoldHami = ZoldHami(vec3(2,2,-3), vec3(0,0,1));
 }
 
 void onDisplay() {
 	glClearColor(0, 0, 0, 0);
 	glClear(GL_COLOR_BUFFER_BIT);
-	renderer->DrawGPU(GL_TRIANGLE_FAN, circlePoints, vec3(0.5f,0.5f,0.5f));
-	pirosHami.draw();
-	zoldHami.draw();
+	center.draw(vec3(0.5f, 0.5f, 0.5f));
+	pirosHami.draw(vec3(1,0,0));
+	zoldHami.draw(vec3(0,1,0));
+	zoldHami.move(); //TODO: lehet nem ide kéne tenni
 	glutSwapBuffers();
 }
 
@@ -194,12 +227,15 @@ void onKeyboard(unsigned char key, int pX, int pY) {
 	switch (key) {
 	case 'e':
 		printf("Pressed key: e, going towards.\n");
+		pirosHami.move();
 		break;
 	case 's':
 		printf("Pressed key: s, rotating to left.\n");
+		pirosHami.rotate(true);
 		break;
 	case 'f':
 		printf("Pressed key: f, rotating to right.\n");
+		pirosHami.rotate(false);
 		break;
 	}
 }

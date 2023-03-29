@@ -1,11 +1,14 @@
 ﻿  Skeleton.cpp
-C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\1. házi feladat\Project\Programs\Skeleton\Skeleton\framework.h(167,17): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\1. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(108,14): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\1. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(149,13): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\1. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(180,33): warning C4244: '=': conversion from 'float' to 'long', possible loss of data
+C:\Users\olive\Desktop\Grafika HF\GrafikaHF\1. házi feladat\Project\Programs\Skeleton\Skeleton\framework.h(167,17): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+C:\Users\olive\Desktop\Grafika HF\GrafikaHF\1. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(57,28): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\olive\Desktop\Grafika HF\GrafikaHF\1. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(57,64): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\olive\Desktop\Grafika HF\GrafikaHF\1. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(69,27): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\olive\Desktop\Grafika HF\GrafikaHF\1. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(69,65): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\olive\Desktop\Grafika HF\GrafikaHF\1. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(142,14): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\olive\Desktop\Grafika HF\GrafikaHF\1. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(244,33): warning C4244: '=': conversion from 'float' to 'long', possible loss of data
   Generating code
-  0 of 197 functions ( 0.0%) were compiled, the rest were copied from previous compilation.
-    0 functions were new in current compilation
-    0 functions had inline decision re-evaluated but remain unchanged
+  60 of 262 functions (22.9%) were compiled, the rest were copied from previous compilation.
+    7 functions were new in current compilation
+    11 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
-  Skeleton.vcxproj -> C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\1. házi feladat\Project\Programs\Skeleton\bin\Skeleton.exe
+  Skeleton.vcxproj -> C:\Users\olive\Desktop\Grafika HF\GrafikaHF\1. házi feladat\Project\Programs\Skeleton\bin\Skeleton.exe
