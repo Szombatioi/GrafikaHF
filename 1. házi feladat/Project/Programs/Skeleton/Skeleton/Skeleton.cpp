@@ -35,6 +35,7 @@
 
 //TODO: kommentek törlése, nyilatkozat elolvasása, források megjelölése
 //TODO: vetített koordináták fv., azokat kell a vectorba tenni
+//TODO: vetítés z koordinátája?
 
 class Geometria {
 	/*
@@ -107,13 +108,19 @@ public:
 	}
 
 	std::vector<vec2> project(const std::vector<vec3> points) { //TODO
-		std::vector<vec2> res;
-		for (auto x : points) res.push_back(vec2(x.x, x.y));
-		return res;
+		std::vector<vec2> projected;
+		for (auto& point : points) {
+			vec2 temp = vec2(point.x / (point.z + 1.0),point.y / (point.z + 1.0));
+			projected.push_back(temp);
+			printf("p0: %.2f, %.2f\n", temp.x, temp.y);
+		}
+		puts("Done");
+		return projected;
 	}
 
 	vec2 project(const vec3 point) { //TODO
-		return vec2(point.x, point.y);
+		vec2 res = vec2(point.x / (point.z + 1.0), point.y / (point.z + 1.0));
+		return res;
 	}
 
 	void DrawGPU(int type, std::vector<vec2> vertices, vec3 color) {
@@ -122,6 +129,11 @@ public:
 		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(vec2), &vertices[0], GL_STATIC_DRAW);
 		glDrawArrays(type, 0, vertices.size());
 	}
+
+	void DrawGPU(int type, std::vector<vec3> vertices, vec3 color) {
+		DrawGPU(type, project(vertices), color);
+	}
+
 	~Renderer() {
 		glDeleteBuffers(1, &vbo);
 		glDeleteVertexArrays(1, &vao);
@@ -140,11 +152,13 @@ public:
 	Circle(vec3 c = vec3(0,0,0), float r = 1) : centerPoint(c), radius(r) {
 		for (int i = 0; i < nOfCirclePoints; i++) {
 			float phi = i * 2.0f * M_PI / nOfCirclePoints;
-			circlePoints.push_back(vec3(centerPoint.x + cosf(phi)*radius, centerPoint.y+sinf(phi)*radius, 0));
+			float x = centerPoint.x + cosf(phi) * radius;
+			float y = centerPoint.y + sinf(phi) * radius;
+			circlePoints.push_back(vec3(x, y, 0));
 		}
 	}
 	void draw(vec3 colors) {
-		renderer->DrawGPU(GL_TRIANGLE_FAN, renderer->project(circlePoints), colors);
+		renderer->DrawGPU(GL_TRIANGLE_FAN, circlePoints, colors);
 	}
 };
 
@@ -163,7 +177,7 @@ public:
 	}
 
 	virtual void move() { 
-		slimePoints.push_back(renderer->project(position)); //TODO: check if contains
+		//slimePoints.push_back(renderer->project(position)); //TODO: check if contains
 	}
 	virtual void draw(vec3 color){
 		animateMouth();
@@ -205,21 +219,33 @@ public:
 Circle center;
 PirosHami pirosHami;
 ZoldHami zoldHami;
+//p + v*t
+std::vector<vec2> line;
+vec2 p, v;
 
 void onInitialization() {
 	renderer = new Renderer();
 	center = Circle();
-	pirosHami = PirosHami(vec3(1,0,1), vec3(-1,0,0));
-	zoldHami = ZoldHami(vec3(2,2,-3), vec3(0,0,1));
+	pirosHami = PirosHami(vec3(2,2,3), vec3(-1,0,0));
+	zoldHami = ZoldHami(vec3(0,0.5f,0), vec3(0,0,1));
+
+	p = vec2(0, 0);
+	v = vec2(1, 2);
+	for (float t = 0; t < 100; t += 0.01) {
+		line.push_back(vec2(p + normalize(v)*t));
+	}
 }
 
 void onDisplay() {
 	glClearColor(0, 0, 0, 0);
 	glClear(GL_COLOR_BUFFER_BIT);
-	center.draw(vec3(0.5f, 0.5f, 0.5f));
-	pirosHami.draw(vec3(1,0,0));
-	zoldHami.draw(vec3(0,1,0));
-	zoldHami.move(); //TODO: lehet nem ide kéne tenni
+	//center.draw(vec3(0.5f, 0.5f, 0.5f));
+	/*pirosHami.draw(vec3(1,0,0));
+	zoldHami.draw(vec3(0,1,0));*/
+
+	renderer->DrawGPU(GL_POINTS, line, vec3(1,1,1));
+
+	//zoldHami.move(); //TODO: lehet nem ide kéne tenni
 	glutSwapBuffers();
 }
 
