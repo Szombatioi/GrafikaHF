@@ -39,11 +39,6 @@
 //TODO: a körök megjelenítése legyen simán euklideszi? Elvégre nem mosódhatnak el a körök
 
 
-struct Point {
-	vec3 point, heading;
-	Point(vec3 p, vec3 h) : point(p), heading(h){}
-};
-
 
 /*
 	1. Egy irányra merőleges irány állítása.
@@ -57,14 +52,19 @@ struct Point {
 //1.
 vec3 perpendicular(vec3 vector) {
 	vec3 temp(0, 0, -1);
+	vector.z *= -1;
 	return cross(vector, temp);
 }
 
 //2.
-Point animatePoint(vec3 point, vec3 vector, float delta_t) {
-	vec3 p = vec3(point * cosh(delta_t) + normalize(vector) * sinh(delta_t));
-	vec3 v = vec3(point * sinh(delta_t) + normalize(vector) * cosh(delta_t));
-	return Point(p, v);
+vec3 movePoint(vec3 point, vec3 vector, float delta_t) {
+	vec3 temp = vec3(point * cosh(delta_t) + normalize(vector) * sinh(delta_t));
+//	printf("%.2f %.2f %.2f\n", temp.x, temp.y, temp.z);
+	return temp;
+}
+
+vec3 moveVec(vec3 point, vec3 vector, float delta_t){
+	return vec3(point * sinh(delta_t) + normalize(vector) * cosh(delta_t));
 }
 
 //3. ?
@@ -72,11 +72,8 @@ Point animatePoint(vec3 point, vec3 vector, float delta_t) {
 
 //4. TODO: szemek, szájak rajzolásához 
 vec3 pointByDirAndDist(vec3 point, vec3 dir, float dist) {
-	return animatePoint(point, dir, dist).point;
+	return  point + normalize(dir)*dist;
 }
-//vec3 producePoint(vec3 point, vec3 vector) {
-//	return vec3(point.x + vector.x, point.y + vector.y, point.z + vector.z);
-//}
 
 //5. 
 vec3 rotateVector(vec3 vector, float angle) {
@@ -123,12 +120,8 @@ public:
 		std::vector<vec2> projected;
 		int i = 0;
 		for (auto& point : points) {
-			//TODO
-			vec2 temp = vec2(point.x / (point.z + 1.0), point.y / (point.z + 1.0));
-			printf("%d: %.2f, %.2f\n", ++i, temp.x, temp.y);
-			projected.push_back(temp);
+			projected.push_back(vec2(point.x / (point.z + 1.0), point.y / (point.z + 1.0)));
 		}
-		puts("-------------");
 		return projected;
 	}
 
@@ -159,24 +152,40 @@ const int nOfCirclePoints = 30;
 long t;
 
 //for tests
-//boolean validPoint(vec3 point) { return point.x* point.x + point.y* point.y - point.z* point.z == -1; }
-//boolean validVector(vec3 vector, vec3 point) { return point.x*vector.x + point.y * vector.y + point.z * vector.z == 0; }
+//bool validPoint(vec3 point) { return point.x* point.x + point.y* point.y - point.z* point.z == -1; }
+//bool validVector(vec3 vector, vec3 point) { return point.x*vector.x + point.y * vector.y + point.z * vector.z == 0; }
 
 class Circle {
 	vec3 centerPoint;
-	std::vector<vec3> circlePoints;
+	//rip circlePoints
 	float radius;
 public:
 	Circle(vec3 c = vec3(0,0,0), float r = 1) : centerPoint(c), radius(r) {
-		for (int i = 0; i < nOfCirclePoints; i++) {
+		/*for (int i = 0; i < nOfCirclePoints; i++) {
 			float phi = i * 2.0f * M_PI / nOfCirclePoints;
 			float x = centerPoint.x + cosf(phi) * radius;
 			float y = centerPoint.y + sinf(phi) * radius;
 			circlePoints.push_back(vec3(x, y, centerPoint.z)); //TODO
-		}
+		}*/
 	}
 	void draw(vec3 colors) {
-		renderer->DrawGPU(GL_TRIANGLE_FAN, circlePoints, colors);
+		vec3 angle;
+		if() angle = vec3(1,0,0); //ha a centertől 0.001-re van
+		else angle = vec3(0,0,1); //ha nem centerbe van, akkor vector: pos->0,0,1
+		std::vector<vec3> points;
+		//vec3 start = centerPoint;
+		//perpendic normalise(cross())
+		
+		for(float i = 0; i < nOfCirclePoints; i++){
+//			float angle = képlet
+			//new point, dir
+			//push back
+			start = movePoint(centerPoint, angle, i);
+			points.push_back(start);
+			moveVec(centerPoint, angle, i);
+		}
+		
+		renderer->DrawGPU(GL_TRIANGLE_FAN, points, colors);
 	}
 	float getR() {
 		return radius;
@@ -208,7 +217,7 @@ public:
 		mouth.draw(vec3(0,0,0));*/
 	}
 
-	void rotate(boolean right, float phi = 0.1f) {
+	void rotate(bool right, float phi = 0.1f) {
 		direction = rotateVector(direction, right ? phi : -phi);
 	}
 
@@ -221,7 +230,11 @@ class PirosHami : public Hami {
 public:
 	PirosHami() {}
 	PirosHami(vec3 start, vec3 dir) : Hami(start, dir) {}
-	void move() { printf("Red hami moves\n"); }
+	void move() { 
+		position = movePoint(position, direction, 0.01);
+		direction = moveVec(position, direction, 0.01);
+		//printf("%.2f %.2f %.2f\n", position.x, position.y, position.z);
+	}
 };
 
 class ZoldHami : public Hami {
@@ -238,7 +251,7 @@ PirosHami pirosHami;
 ZoldHami zoldHami;
 
 //testing the projection with lines
-std::vector<vec3> line;
+//std::vector<vec3> line;
 
 void onInitialization() {
 	
@@ -246,7 +259,7 @@ void onInitialization() {
 
 	renderer = new Renderer();
 
-	/*glPointSize(10.0f);  //////////test: a vetítésem jó
+/*	glPointSize(10.0f);  //////////test: a vetítésem jó
 	line.push_back(vec3(1, 1, sqrt(3)));
 	line.push_back(vec3(0,0,1));
 	line.push_back(vec3(2,2,3));
@@ -262,17 +275,19 @@ void onDisplay() {
 	glClearColor(0, 0, 0, 0);
 	glClear(GL_COLOR_BUFFER_BIT);
 	//center.draw(vec3(0.5f, 0.5f, 0.5f));
-	//pirosHami.draw(vec3(1,0,0));
+	pirosHami.draw(vec3(1,0,0));
 	zoldHami.draw(vec3(0,1,0));
 
-	//renderer->DrawGPU(GL_POINTS, line, vec3(1,1,1)); //test
+//	renderer->DrawGPU(GL_POINTS, line, vec3(1,1,1)); //test
 
 	//zoldHami.move(); //TODO: lehet nem ide kéne tenni
 	glutSwapBuffers();
 }
 
+bool keys[256];
 void onKeyboard(unsigned char key, int pX, int pY) {
-	switch (key) {
+	keys[key] = true;
+	/*switch (key) {
 	case 'e':
 		printf("Pressed key: e, going towards.\n");
 		pirosHami.move();
@@ -285,13 +300,18 @@ void onKeyboard(unsigned char key, int pX, int pY) {
 		printf("Pressed key: f, rotating to right.\n");
 		pirosHami.rotate(false);
 		break;
-	}
+	}*/
 }
 
 void onIdle() {
 	t = glutGet(GLUT_ELAPSED_TIME) / 1000.0f;
+	if(keys['e']) pirosHami.move();
+/*	if(keys['s']) printf("Rotate left\n");
+	if(keys['f']) printf("Rotate right\n");*/
 }
 
-void onKeyboardUp(unsigned char key, int pX, int pY) {}
+void onKeyboardUp(unsigned char key, int pX, int pY) {
+	keys[key] = false;
+}
 void onMouseMotion(int pX, int pY) {}
 void onMouse(int button, int state, int pX, int pY) {}
