@@ -1,4 +1,2 @@
 #!/bin/sh
-git add .
-git commit $1
-git push
+git add . && git commit $1 && git push

@@ -4,5 +4,6 @@ while(True):
     y = float(y)
     z = float(z)
 
-    print("valid" if x*x+y*y-z*z >= -1.1 and x*x+y*y-z*z <= -0.9 else "invalid")
+    print(f"P*P = {x*x+y*y-z*z}")
+    print("valid" if x*x+y*y-z*z >= -1.1 and x*x+y*y-z*z <= -0.9 else "invalid", "point")
     input()

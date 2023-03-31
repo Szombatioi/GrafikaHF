@@ -1,0 +1,5 @@
+Lépések:
+1. Kiváló geometria alkalmazása, függvényesítése
+2. 3D mozgás implementálása
+3. 3D -> 2D vetítés a geometria szabályának megfelelően
+4. 2D kirajzolás
