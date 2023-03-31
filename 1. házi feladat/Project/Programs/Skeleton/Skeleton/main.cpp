@@ -57,7 +57,7 @@ vec3 hyMoveV(vec3 point, vec3 vector, float t) {
 //3. Egy ponthoz képest egy másik pont irányának és távolságának meghatározása.
 vec3 hyDir(vec3 p, vec3 q) {
 	//TODO: szemek irányának meghatározásához
-	return vec3((q - p * coshf(delta_t)) / sinhf(delta_t));
+	return vec3((q - p * coshf(0.0001)) / sinhf(0.0001)); //0.0001 -> precizitás? t -> 0 ? 
 }
 
 float hyDot(vec3 p, vec3 q) {
@@ -201,20 +201,30 @@ float map(float value,
 
 struct Hami {
 	vec3 center, direction;
-	Circle body, mouth; //TODO: fölösleges eltárolni a hami száját, szemét, stb. -> legyen rá generáló függvény
+	Circle body, mouth, lEye, rEye, lPup, rPup; //TODO: fölösleges eltárolni a hami száját, szemét, stb. -> legyen rá generáló függvény
 	std::vector<vec2> path;
 	Hami() {}
 	Hami(vec3 c, vec3 d) : center(c), direction(d) {
 		body = Circle(center, 0.3f);
 		mouth = Circle(hyProduceP(center, direction, body.radius), 0.1);
+		lEye = Circle(hyProduceP(center, hyRotate(center, direction, 0.5), body.radius), 0.08);
+		rEye = Circle(hyProduceP(center, hyRotate(center, direction, -0.5), body.radius), 0.08);
+		lPup = Circle(hyProduceP(lEye.center, direction, 0), 0.04);
+		rPup = Circle(hyProduceP(rEye.center, direction, 0), 0.04);
 	}
 	void draw(vec3 color) {
 
 		renderer->DrawGPU(GL_LINE_STRIP, path, vec3(1,1,1));
 		body.draw(color);
-		
-		mouth.radius = map(sin(t*10.0f), -1, 1, 0.08, 0.115);
-		mouth.draw(vec3(0, 1, 1));
+
+		lEye.draw(vec3(1,1,1));
+		rEye.draw(vec3(1, 1, 1));
+
+		lPup.draw(vec3(0, 0, 1));
+		rPup.draw(vec3(0, 0, 1));
+
+		mouth.radius = map(sin(t * 10.0f), -1, 1, 0.08, 0.1);
+		mouth.draw(vec3(0,0,0));
 	}
 	void rotate(bool left) {
 		direction = hyInvVector(center, hyRotate(center, direction, 0.05 * (left ? 1.0f : -1.0f)));
@@ -229,6 +239,13 @@ struct Hami {
 		//itt írjuk felül a testrészeket
 		body.center = center;
 		mouth.center = hyProduceP(center, direction, body.radius);
+		lEye.center = hyProduceP(center, hyRotate(center, direction, 0.5), body.radius);
+		rEye.center = hyProduceP(center, hyRotate(center, direction, -0.5), body.radius);
+		lPup.center = hyProduceP(lEye.center, direction, 0);
+		rPup.center = hyProduceP(rEye.center, direction, 0);
+		
+		/*lPup.center = hyProduceP(center, hyRotate(center, direction, 0.5), body.radius + lEye.radius/2.0);
+		rPup.center = hyProduceP(center, hyRotate(center, direction, -0.5), body.radius + lEye.radius / 2.0);*/
 	}
 };
 Hami pirosHami, zoldHami;
