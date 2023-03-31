@@ -210,7 +210,7 @@ struct Hami {
 	}
 	void draw(vec3 color) {
 
-		renderer->DrawGPU(GL_POINTS, path, vec3(1,1,1));
+		renderer->DrawGPU(GL_LINE_STRIP, path, vec3(1,1,1));
 		body.draw(color);
 		
 		mouth.radius = map(sin(t*10.0f), -1, 1, 0.08, 0.115);
