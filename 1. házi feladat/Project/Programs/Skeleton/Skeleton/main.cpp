@@ -36,6 +36,8 @@
 //TODO: 
 //kommentek törlése
 //források megjelölése
+//vektor return -> normalize + approx
+//pont return --> approx
 
 float delta_t = 0.02;
 
@@ -51,13 +53,13 @@ vec3 hyMoveP(vec3 point, vec3 vector, float t) {
 }
 
 vec3 hyMoveV(vec3 point, vec3 vector, float t) {
-	return point * sinhf(t) + normalize(vector) * coshf(t);
+	return normalize(point * sinhf(t) + normalize(vector) * coshf(t));
 }
 
 //3. Egy ponthoz képest egy másik pont irányának és távolságának meghatározása.
 vec3 hyDir(vec3 p, vec3 q) {
 	//TODO: szemek irányának meghatározásához
-	return vec3((q - p * coshf(0.0001)) / sinhf(0.0001)); //0.0001 -> precizitás? t -> 0 ? 
+	return normalize(vec3((q - p * coshf(0.0001)) / sinhf(0.0001))); //0.0001 -> precizitás? t -> 0 ? 
 }
 
 float hyDot(vec3 p, vec3 q) {
@@ -78,7 +80,7 @@ vec3 hyProduceP(vec3 point, vec3 dir, float dist) {
 //5. Egy pontban egy vektor elforgatása adott szöggel.
 vec3 hyRotate(vec3 point, vec3 vector, float angle) {
 	vec3 v = normalize(vector);
-	return vec3(v * cosf(angle) + hyPerp(v) * sinf(angle));
+	return normalize(vec3(v * cosf(angle) + hyPerp(v) * sinf(angle)));
 }
 
 //6. Egy közelítő pont és sebességvektorhoz a geometria szabályait teljesítő, közeli pont és sebesség választása.
@@ -89,7 +91,7 @@ vec3 hyInvPoint(vec3 point) {
 
 vec3 hyInvVector(vec3 point, vec3 vector) {
 	float lambda = hyDot(point, vector);
-	return vector + lambda * point;
+	return normalize(vector + lambda * point);
 }
 
 class Renderer : public GPUProgram {
@@ -212,9 +214,18 @@ struct Hami {
 		lPup = Circle(hyProduceP(lEye.center, direction, 0), 0.04);
 		rPup = Circle(hyProduceP(rEye.center, direction, 0), 0.04);
 	}
-	void draw(vec3 color) {
+	void draw(vec3 color, Hami other) {
 
 		renderer->DrawGPU(GL_LINE_STRIP, path, vec3(1,1,1));
+
+		//itt írjuk felül a testrészeket
+		body.center = center;
+		mouth.center = hyProduceP(center, direction, body.radius);
+		lEye.center = hyProduceP(center, hyRotate(center, direction, 0.5), body.radius);
+		rEye.center = hyProduceP(center, hyRotate(center, direction, -0.5), body.radius);
+		lPup.center = hyProduceP(lEye.center, hyDir(center, other.center), body.radius / 8);
+		rPup.center = hyProduceP(rEye.center, hyDir(center, other.center), body.radius / 8);
+
 		body.draw(color);
 
 		lEye.draw(vec3(1,1,1));
@@ -235,14 +246,6 @@ struct Hami {
 		direction = hyInvVector(center, hyMoveV(center, direction, 0.1));
 		center = hyInvPoint(center);
 		path.push_back(renderer->projectPoincare(center));
-
-		//itt írjuk felül a testrészeket
-		body.center = center;
-		mouth.center = hyProduceP(center, direction, body.radius);
-		lEye.center = hyProduceP(center, hyRotate(center, direction, 0.5), body.radius);
-		rEye.center = hyProduceP(center, hyRotate(center, direction, -0.5), body.radius);
-		lPup.center = hyProduceP(lEye.center, direction, 0);
-		rPup.center = hyProduceP(rEye.center, direction, 0);
 		
 		/*lPup.center = hyProduceP(center, hyRotate(center, direction, 0.5), body.radius + lEye.radius/2.0);
 		rPup.center = hyProduceP(center, hyRotate(center, direction, -0.5), body.radius + lEye.radius / 2.0);*/
@@ -284,8 +287,8 @@ void onDisplay() {
 	renderer->DrawGPU(GL_TRIANGLE_FAN, circlePoints, vec3(0, 0, 0));
 
 	
-	pirosHami.draw(vec3(1, 0, 0));
-	zoldHami.draw(vec3(0, 1, 0));
+	pirosHami.draw(vec3(1, 0, 0), zoldHami);
+	zoldHami.draw(vec3(0, 1, 0), pirosHami);
 
 	glutSwapBuffers();
 }
@@ -294,16 +297,21 @@ void onIdle() {
 	t = glutGet(GLUT_ELAPSED_TIME) / 1000.0f;
 	
 	////TODO ezt törölni
-	glClearColor(0.5f,0.5f,0.5f,0);
-	glClear(GL_COLOR_BUFFER_BIT);
-	renderer->DrawGPU(GL_TRIANGLE_FAN, circlePoints, vec3(0, 0, 0));
-	pirosHami.draw(vec3(1, 0, 0));
-	zoldHami.draw(vec3(0, 1, 0));
-	/*std::vector<vec3> p;
-	p.push_back(testPoint);
-	renderer->DrawGPU(GL_POINTS, p, vec3(1, 0, 0));*/
-	glutSwapBuffers();
+	//glClearColor(0.5f,0.5f,0.5f,0);
+	//glClear(GL_COLOR_BUFFER_BIT);
+	//renderer->DrawGPU(GL_TRIANGLE_FAN, circlePoints, vec3(0, 0, 0));
+	//pirosHami.draw(vec3(1, 0, 0), zoldHami);
+	//zoldHami.draw(vec3(0, 1, 0), pirosHami);
+	///*std::vector<vec3> p;
+	//p.push_back(testPoint);
+	//renderer->DrawGPU(GL_POINTS, p, vec3(1, 0, 0));*/
+	//glutSwapBuffers();
+	glutPostRedisplay();
 	//printf("%.2f, %.2f, %.2f\n", testPoint.x, testPoint.y, testPoint.z);
+
+	zoldHami.move();
+	zoldHami.rotate(false);
+
 	if (keys['e']) {
 		pirosHami.move();
 		/*testPoint = hyMoveP(testPoint, testDir, 0.02);
