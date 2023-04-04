@@ -1,21 +1,4 @@
 ﻿//=============================================================================================
-// Mintaprogram: Zold haromszog. Ervenyes 2019. osztol.
-//
-// A beadott program csak ebben a fajlban lehet, a fajl 1 byte-os ASCII karaktereket tartalmazhat, BOM kihuzando.
-// Tilos:
-// - mast "beincludolni", illetve mas konyvtarat hasznalni
-// - faljmuveleteket vegezni a printf-et kiveve
-// - Mashonnan atvett programresszleteket forrasmegjeloles nelkul felhasznalni es
-// - felesleges programsorokat a beadott programban hagyni!!!!!!! 
-// - felesleges kommenteket a beadott programba irni a forrasmegjelolest kommentjeit kiveve
-// ---------------------------------------------------------------------------------------------
-// A feladatot ANSI C++ nyelvu forditoprogrammal ellenorizzuk, a Visual Studio-hoz kepesti elteresekrol
-// es a leggyakoribb hibakrol (pl. ideiglenes objektumot nem lehet referencia tipusnak ertekul adni)
-// a hazibeado portal ad egy osszefoglalot.
-// ---------------------------------------------------------------------------------------------
-// A feladatmegoldasokban csak olyan OpenGL fuggvenyek hasznalhatok, amelyek az oran a feladatkiadasig elhangzottak 
-// A keretben nem szereplo GLUT fuggvenyek tiltottak.
-//
 // NYILATKOZAT
 // ---------------------------------------------------------------------------------------------
 // Nev    : Szombati Olivér
@@ -33,11 +16,14 @@
 //=============================================================================================
 #include "framework.h"
 
+
 //TODO: 
 //kommentek törlése
 //források megjelölése
 //vektor return -> normalize + approx
 //pont return --> approx
+//szemek összecsúsznak
+//kör kirajzolása
 
 float delta_t = 0.05; //0.02 volt
 int last_time;
@@ -52,6 +38,27 @@ vec3 hyNormalize(vec3 point, vec3 vector){
 	return normalize(vector);
 }
 
+vec3 hyCross(vec3 v, vec3 w){
+	vec3 res = cross(v,w);
+	return res;
+}
+
+float hyDot(vec3 p, vec3 q) {
+	return p.x*q.x + p.y*q.y - p.z*q.z;
+}
+
+vec3 hnorm(vec3 vec) { return vec / sqrtf(fabs(hyDot(vec, vec))); }
+
+
+vec2 hyProject(vec3 point) {
+	return vec2(point.x / (point.z + 1), point.y / (point.z+1));
+}
+
+vec3 hyNormalize(vec3 vector){
+	//return vector / 
+	return normalize(vector); //todo
+}
+
 //1. irányra merőleges állítása
 vec3 hyPerp(vec3 vector) {
 	//vector.z *= -1;
@@ -60,8 +67,12 @@ vec3 hyPerp(vec3 vector) {
 
 //2. Adott pontból és sebesség vektorral induló pont helyének és sebesség vektorának számítása t idővel később.
 vec3 hyMoveP(vec3 point, vec3 vector, float t) {
+<<<<<<< HEAD
 //	return point * coshf(t) + normalize(vector) * sinhf(t);
 	return point * coshf(t) + hyNormalize(point, vector) * sinhf(t);
+=======
+	return point * coshf(t) + hyNormalize(vector) * sinhf(t);
+>>>>>>> newB
 }
 
 vec3 hyMoveV(vec3 point, vec3 vector, float t) {
@@ -74,7 +85,10 @@ vec3 hyDir(vec3 p, vec3 q) {
 	return vec3((q - p * coshf(0.0001)) / sinhf(0.0001)); //0.0001 -> precizitás? t -> 0 ? 
 }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> newB
 float hyDist(vec3 point, vec3 otherPoint) {
 	return acoshf(-1.0f * hyDot(otherPoint, point));
 }
@@ -140,10 +154,6 @@ public:
 		return res;
 	}
 
-	vec2 projectPoincare(vec3 point) {
-		return vec2(point.x / (point.z + 1), point.y / (point.z+1));
-	}
-
 	void DrawGPU(int type, std::vector<vec2> vertices, vec3 color) {
 		setUniform(color, "color");
 		glBindVertexArray(vao);
@@ -165,35 +175,33 @@ long t;
 struct Circle {
 	float radius;
 	vec3 center;
-	std::vector<vec3> points;
+	//std::vector<vec3> points;
+	//std::vector<vec2> points;
 	Circle() {}
 	Circle(vec3 c, float r) : center(c), radius(r) {}
+	//Circle(vec2 c, float r) : center(vec3(c.x, c.y, 0)), radius(r){}
 	
 	void draw(vec3 color) {
-		vec3 dir;
-		if (hyDist(center, vec3(0, 0, 1)) <= 0.01) { dir = vec3(1, 1, 1); } //ha a centertől 0.001-re van
-		else dir = hyDir(center, vec3(0,0,1)); //ha nem centerbe van, akkor vector: pos->0,0,1
-		
 		std::vector<vec3> points;
+<<<<<<< HEAD
 		//std::vector<vec2> points;
 		//vec3 start = centerPoint;
 		//perpendic normalise(cross())
+=======
+>>>>>>> newB
 
-		//vec3 perp = hyPerp(dir);
+		vec3 direction;
+		if (hyDist(center, vec3(0, 0, 1)) <= 0.0001) {
+			direction = vec3(1, 0, 0);
+		} else {
+			direction = hyDir(center, vec3(0, 0, 1));
+		}
+		auto perpendicular = hnorm(hyCross(center, direction));
 		for (int i = 0; i < ncircleVertices; i++) {
 			float angle = M_PI * 2.0f * i / ncircleVertices;
-			float x = center.x + cosf(angle) * radius, 
-				  y = center.y + sinf(angle) * radius;
-			points.push_back(vec3(x,y,1));
-
-			//vec3 newPoint = hyMoveP(center, dir, radius);
-			////dir = hyMoveV(center, dir, radius);
-			//dir = hyRotate(center, dir, angle);
-			//points.push_back(newPoint);
-			
-						/*start = movePoint(centerPoint, angle, i);
-			points.push_back(start);
-			moveVec(centerPoint, angle, i);*/
+			auto dir = hnorm(direction * cosf(angle) + perpendicular * sinf(angle));
+			auto point = center * coshf(radius) + dir * sinhf(radius);
+			points.push_back(hnorm(point));
 		}
 
 		renderer->DrawGPU(GL_TRIANGLE_FAN, points, color);
@@ -211,7 +219,7 @@ float map(float value,
 
 struct Hami {
 	vec3 center, direction;
-	Circle body, mouth, lEye, rEye, lPup, rPup; //TODO: fölösleges eltárolni a hami száját, szemét, stb. -> legyen rá generáló függvény
+	Circle body, mouth, lEye, rEye, lPup, rPup;
 	std::vector<vec2> path;
 	Hami() {}
 	Hami(vec3 c, vec3 d) : center(c), direction(d) {
@@ -224,15 +232,18 @@ struct Hami {
 	}
 	void draw(vec3 color, Hami other) {
 
+<<<<<<< HEAD
 		//renderer->DrawGPU(GL_LINE_STRIP, path, vec3(1,1,1));
 
 		//itt írjuk felül a testrészeket
+=======
+>>>>>>> newB
 		body.center = center;
 		mouth.center = hyProduceP(center, direction, body.radius);
 		lEye.center = hyProduceP(center, hyRotate(center, direction, 0.5), body.radius);
 		rEye.center = hyProduceP(center, hyRotate(center, direction, -0.5), body.radius);
-		lPup.center = hyProduceP(lEye.center, hyDir(center, other.center), body.radius / 8);
-		rPup.center = hyProduceP(rEye.center, hyDir(center, other.center), body.radius / 8);
+		lPup.center = hyProduceP(lEye.center, hyDir(center, other.lEye.center), body.radius / 8);
+		rPup.center = hyProduceP(rEye.center, hyDir(center, other.rEye.center), body.radius / 8);
 
 		body.draw(color);
 
@@ -242,7 +253,7 @@ struct Hami {
 		lPup.draw(vec3(0, 0, 1));
 		rPup.draw(vec3(0, 0, 1));
 
-		mouth.radius = map(sin(t * 10.0f), -1, 1, 0.08, 0.1);
+		mouth.radius = map(sin(t * 5.0f), -1, 1, 0.08, 0.09);
 		mouth.draw(vec3(0,0,0));
 	}
 	void rotate(bool left) {
@@ -253,7 +264,11 @@ struct Hami {
 		center = hyMoveP(center, direction, delta_t);
 		direction = hyInvVector(center, hyMoveV(center, direction, 0.1));
 		center = hyInvPoint(center);
+<<<<<<< HEAD
 		path.push_back(renderer->projectPoincare(center));
+=======
+		path.push_back(hyProject(center));
+>>>>>>> newB
 	}
 };
 
@@ -262,8 +277,12 @@ std::vector<vec2> circlePoints;
 vec3 testPoint, testDir;
 
 void onInitialization() {
+<<<<<<< HEAD
 	last_time = 0;
 	t = 0;
+=======
+	glLineWidth(2.0f);
+>>>>>>> newB
 	renderer = new Renderer();
 	//pirosHami = Hami(vec3(0,0,1), vec3(1,2,0));
 	pirosHami = Hami(vec3(0,0,1), vec3(0,1,0));
@@ -274,6 +293,7 @@ void onInitialization() {
 		circlePoints.push_back(vec2(cosf(angle), sinf(angle)));
 	}
 }
+
 bool keys[256];
 void onDisplay() {
 	glClearColor(0.5f,0.5f,0.5f,0);
@@ -289,6 +309,7 @@ void onDisplay() {
 
 void onIdle() {
 	t = glutGet(GLUT_ELAPSED_TIME) / 1000.0f;
+<<<<<<< HEAD
 
 	glutPostRedisplay();
 	//glutPostRedisplay();
@@ -310,6 +331,16 @@ void onIdle() {
 	if (keys['e']) { pirosHami.move(); }
 	if (keys['s']) { pirosHami.rotate(true); }
 	if (keys['f']) { pirosHami.rotate(false); }
+=======
+	glutPostRedisplay();
+	
+	zoldHami.move();
+	zoldHami.rotate(false);
+
+	if (keys['e']) {pirosHami.move();}
+	if (keys['s']) {pirosHami.rotate(true);}
+	if (keys['f']) {pirosHami.rotate(false);}
+>>>>>>> newB
 }
 
 
