@@ -75,7 +75,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="framework.cpp" />
-    <ClCompile Include="main.cpp" />
+    <ClCompile Include="hami.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />

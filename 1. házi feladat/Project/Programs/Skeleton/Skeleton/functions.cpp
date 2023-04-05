@@ -1,7 +1,5 @@
 ////A vektorok normalizálása mindig a hívó feladata! Ne adjunk vissza feleslegesen normalizált vektort
 
-
-
 vec3 hyNormalize(vec3 vector){
     return vector / hyDot(vector, vector);
 }

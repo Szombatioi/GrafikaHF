@@ -1,22 +1,17 @@
-﻿  main.cpp
+﻿  hami.cpp
 C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\1. házi feladat\Project\Programs\Skeleton\Skeleton\framework.h(167,17): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\1. házi feladat\Project\Programs\Skeleton\Skeleton\main.cpp(42,21): warning C4305: 'initializing': truncation from 'double' to 'float'
-C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\1. házi feladat\Project\Programs\Skeleton\Skeleton\main.cpp(62,45): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\1. házi feladat\Project\Programs\Skeleton\Skeleton\main.cpp(62,62): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\1. házi feladat\Project\Programs\Skeleton\Skeleton\main.cpp(88,16): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\1. házi feladat\Project\Programs\Skeleton\Skeleton\main.cpp(175,16): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\1. házi feladat\Project\Programs\Skeleton\Skeleton\main.cpp(211,1): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\1. házi feladat\Project\Programs\Skeleton\Skeleton\main.cpp(212,1): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\1. házi feladat\Project\Programs\Skeleton\Skeleton\main.cpp(213,1): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\1. házi feladat\Project\Programs\Skeleton\Skeleton\main.cpp(214,1): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\1. házi feladat\Project\Programs\Skeleton\Skeleton\main.cpp(215,1): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\1. házi feladat\Project\Programs\Skeleton\Skeleton\main.cpp(237,1): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\1. házi feladat\Project\Programs\Skeleton\Skeleton\main.cpp(237,25): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\1. házi feladat\Project\Programs\Skeleton\Skeleton\main.cpp(241,68): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\1. házi feladat\Project\Programs\Skeleton\Skeleton\main.cpp(246,1): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\1. házi feladat\Project\Programs\Skeleton\Skeleton\main.cpp(265,15): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\1. házi feladat\Project\Programs\Skeleton\Skeleton\hami.cpp(19,30): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\1. házi feladat\Project\Programs\Skeleton\Skeleton\hami.cpp(31,28): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\1. házi feladat\Project\Programs\Skeleton\Skeleton\hami.cpp(80,16): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\1. házi feladat\Project\Programs\Skeleton\Skeleton\hami.cpp(166,16): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\1. házi feladat\Project\Programs\Skeleton\Skeleton\hami.cpp(191,1): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\1. házi feladat\Project\Programs\Skeleton\Skeleton\hami.cpp(191,25): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\1. házi feladat\Project\Programs\Skeleton\Skeleton\hami.cpp(200,56): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\1. házi feladat\Project\Programs\Skeleton\Skeleton\hami.cpp(217,14): warning C4244: '=': conversion from 'float' to 'long', possible loss of data
+C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\1. házi feladat\Project\Programs\Skeleton\Skeleton\hami.cpp(224,15): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\1. házi feladat\Project\Programs\Skeleton\Skeleton\hami.cpp(245,13): warning C4244: '=': conversion from 'long' to 'float', possible loss of data
   Generating code
-  18 of 275 functions ( 6.5%) were compiled, the rest were copied from previous compilation.
+  2 of 261 functions ( 0.8%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
     2 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
