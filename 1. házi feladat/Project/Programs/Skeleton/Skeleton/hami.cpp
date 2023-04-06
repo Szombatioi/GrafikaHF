@@ -59,7 +59,7 @@ float hyDist(vec3 p, vec3 q) {
 }
 
 vec3 hyDir(vec3 p, vec3 q) {
-	return vec3((q - p * coshf(hyDist(p,q))) / sinhf(hyDist(p, q))); //0.0001 -> precizitás? t -> 0 ? 
+	return vec3((q - p * coshf(hyDist(p,q))) / sinhf(hyDist(p, q)));
 }
 
 // 4. Egy ponthoz képest adott irányban és távolságra lévő pont előállítása.
@@ -77,7 +77,7 @@ vec3 hyRotate(vec3 vector, float phi) {
 // 6. Egy közelítő pont és sebességvektorhoz a geometria szabályait teljesítő, közeli pont és sebesség választása.
 ////Ha mozog a pont, akkor mindig vissza kell dobnunk a síkra
 vec3 hyNearP(vec3 point) {
-	point.z = sqrt(point.x * point.x + point.y * point.y + 1); ///Ehelyett centrális visszavetítés kéne
+	point.z = sqrt(point.x * point.x + point.y * point.y + 1); ///Ehelyett centrális visszavetítés kéne?
 	return point;
 }
 
@@ -162,7 +162,7 @@ struct Circle {
 		vec3 perp = hyNormalize(hyCross(center, direction));
 		std::vector<vec3> circlePoints;
 		
-		for (int i = 0; i < ncircleVertices; ++i) {
+		for (int i = 0; i < ncircleVertices; i++) {
 			float angle = 2 * M_PI * i / ncircleVertices;
 			vec3 dir = hyNormalize(direction * cosf(angle) + perp * sinf(angle));
 			vec3 point = center * coshf(radius) + dir * sinhf(radius);
@@ -240,7 +240,7 @@ void onDisplay() {
 
 void onIdle() {
 	t = glutGet(GLUT_ELAPSED_TIME);
-	printf("%.3f\n", t - delta_t);
+	//printf("%.3f\n", t - delta_t);
 	if (t - delta_t > 60) {
 		delta_t = t;
 	}
