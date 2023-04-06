@@ -16,7 +16,14 @@
 //=============================================================================================
 #include "framework.h"
 
-float testValueForMove = 0.02;
+//TODO 
+	//DONE pupillák eltűnnek néha
+	//DONE száj rángatózik
+//szemek szétcsúsznak
+//körmozgás!
+
+float testValueForRotation = 0.05;
+float testValueForMove = (2 * M_PI * testValueForRotation) / 20.0f;
 
 ////A vektorok normalizálása mindig a hívó feladata! Ne adjunk vissza feleslegesen normalizált vektort
 
@@ -72,7 +79,7 @@ vec3 hyProduceP(vec3 point, vec3 vector, float distance) {
 // 5. Egy pontban egy vektor elforgatása adott szöggel.
 vec3 hyRotate(vec3 vector, float phi) {
 	vec3 v = hyNormalize(vector);
-	return vec3(v * cosf(phi) + hyNormalize(hyPerp(v)) * sinf(phi));
+	return v * cosf(phi) + hyNormalize(hyPerp(v)) * sinf(phi);
 }
 
 // 6. Egy közelítő pont és sebességvektorhoz a geometria szabályait teljesítő, közeli pont és sebesség választása.
@@ -197,21 +204,21 @@ struct Hami {
 		rEye.center = hyNearP(hyProduceP(center, hyNormalize(hyNearV(center, hyRotate(direction, -M_PI / 6))), body.radius));
 		rEye.draw(vec3(1, 1, 1));
 
-		lPup.center = hyProduceP(lEye.center, hyDir(body.center, other.body.center), lEye.radius / 2);
+		lPup.center = hyProduceP(lEye.center, hyNearV(lEye.center, hyDir(body.center, other.body.center)), 3 * lEye.radius / 4);
 		lPup.draw(vec3(0,0,1));
-		rPup.center = hyProduceP(rEye.center, hyDir(body.center, other.body.center), rEye.radius / 2);
+		rPup.center = hyProduceP(rEye.center, hyNearV(rEye.center, hyDir(body.center, other.body.center)), 3 * rEye.radius / 4);
 		rPup.draw(vec3(0, 0, 1));
 
 		//mouth
 		mouth.center = hyNearP(hyProduceP(center, direction, body.radius));
-		mouth.radius = map(sin(t / 0.5f), -1, 1, body.radius / 4, body.radius / 3);
-		mouth.draw(vec3(1,0,1));
+		mouth.radius = map(sin(delta_t * 10.0f), -1, 1, body.radius / 4, body.radius / 3);
+		mouth.draw(vec3(0,0,0));
 
 		
 	}
 
 	void rotate(bool left) {
-		direction = hyNearV(center, hyRotate(direction, 0.05 * (left ? -1.0f : 1.0f)));
+		direction = hyNearV(center, hyRotate(direction, testValueForRotation * (left ? -1.0f : 1.0f)));
 	}
 
 	void move(float delta) {
@@ -234,7 +241,6 @@ void onInitialization() {
 
 	piros = Hami(vec3(0,0,1));
 	zold = Hami(vec3(1, 0.75, sqrt(2.5625)), vec3(2,-2,0));
-	printf("%.2f\n", hyDot(zold.center, zold.center));
 	//zold = Hami(vec3(2, 2, 3), vec3(2,-2,0));
 
 	for (int i = 0; i < ncircleVertices; i++) {
@@ -254,31 +260,22 @@ void onDisplay() {
 	zold.draw(vec3(0, 1, 0), piros);
 	piros.draw(vec3(1,0,0), zold);
 
+	delta_t = glutGet(GLUT_ELAPSED_TIME);
+
 	glutSwapBuffers();
 }
 
 void onIdle() {
-	t = glutGet(GLUT_ELAPSED_TIME) / 1000.0f;
-	//printf("%.3f\n", t - delta_t);
-	/*if (t - delta_t > 60) {
-		delta_t = t;
-	}*/
-	/*if (t - delta_t > 15) {
-		if (keys['e']) { piros.move(0.01); }
+	t = glutGet(GLUT_ELAPSED_TIME);
+	delta_t = t / 1000.0f;
+	if (t - 1000/60 > delta_t) {
+		zold.move(testValueForMove);
+		zold.rotate(false);
+		if (keys['e']) { piros.move(testValueForMove); }
+		if (keys['s']) { piros.rotate(true); }
+		if (keys['f']) { piros.rotate(false); }
 		glutPostRedisplay();
-		delta_t = t;
-		
-	}*/
-	glutPostRedisplay();
-
-	zold.move(testValueForMove);
-	zold.rotate(false);
-
-	if (keys['e']) { piros.move(testValueForMove); }
-	if (keys['s']) { piros.rotate(true); }
-	if (keys['f']) { piros.rotate(false); }
-	
-
+	}
 }
 
 
