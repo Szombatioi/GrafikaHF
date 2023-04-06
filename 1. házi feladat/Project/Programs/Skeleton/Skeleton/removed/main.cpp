@@ -302,7 +302,7 @@ void onIdle() {
 	t = glutGet(GLUT_ELAPSED_TIME) / 1000.0f;
 
 
-	glutPostRedisplay();
+	//glutPostRedisplay();
 	//glutPostRedisplay();
 	// if(true || t - last_time > 15){
 	// 	zoldHami.move();
@@ -325,12 +325,7 @@ void onIdle() {
 
 	glutPostRedisplay();
 	
-	zoldHami.move();
-	zoldHami.rotate(false);
-
-	if (keys['e']) {pirosHami.move();}
-	if (keys['s']) {pirosHami.rotate(true);}
-	if (keys['f']) {pirosHami.rotate(false);}
+	
 
 }
 

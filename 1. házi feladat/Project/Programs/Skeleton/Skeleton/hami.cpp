@@ -64,21 +64,23 @@ vec3 hyDir(vec3 p, vec3 q) {
 
 // 4. Egy ponthoz képest adott irányban és távolságra lévő pont előállítása.
 vec3 hyProduceP(vec3 point, vec3 vector, float distance) {
-	return point * coshf(distance) + hyNormalize(vector) * sinhf(distance);
+	return hyMoveP(point, vector, distance);
+	//return point * coshf(distance) + hyNormalize(vector) * sinhf(distance);
 	//vector-t változtatni kellene itt?
 }
 
 // 5. Egy pontban egy vektor elforgatása adott szöggel.
 vec3 hyRotate(vec3 vector, float phi) {
 	vec3 v = hyNormalize(vector);
-	return vec3(v * cosf(phi) + hyPerp(v) * sinf(phi));
+	return vec3(v * cosf(phi) + hyNormalize(hyPerp(v)) * sinf(phi));
 }
 
 // 6. Egy közelítő pont és sebességvektorhoz a geometria szabályait teljesítő, közeli pont és sebesség választása.
 ////Ha mozog a pont, akkor mindig vissza kell dobnunk a síkra
 vec3 hyNearP(vec3 point) {
-	point.z = sqrt(point.x * point.x + point.y * point.y + 1); ///Ehelyett centrális visszavetítés kéne?
-	return point;
+	/*point.z = sqrt(point.x * point.x + point.y * point.y + 1); ///Ehelyett centrális visszavetítés kéne?
+	return point;*/
+	return hyNormalize(point);
 }
 
 vec3 hyNearV(vec3 point, vec3 vector) {
@@ -178,22 +180,34 @@ struct Hami {
 	Circle body, mouth, lEye, rEye, lPup, rPup;
 	std::vector<vec2> path;
 	Hami(vec3 c = vec3(0,0,1), vec3 d = vec3(1,2,0)) : center(c), direction(d){
-		mouth = Circle(vec3(0,0,0), 0.1f);
-		lEye = Circle(vec3(0, 0, 0), 0.08f);
+		body = Circle(center);
+		mouth = Circle(hyNearP(hyProduceP(center, direction, body.radius)), body.radius / 3);
+		lEye = Circle(vec3(0,0,0), body.radius / 3);
+		rEye = Circle(vec3(0, 0, 0), body.radius / 3);
+		lPup = Circle(vec3(0, 0, 0), lEye.radius / 2);
+		rPup = Circle(vec3(0, 0, 0), rEye.radius / 2);
 	}
-	void draw(vec3 color) {
-		renderer->DrawGPU(GL_LINE_STRIP, path, vec3(1, 1, 1));
+	void draw(vec3 color, Hami other) {
 		body.center = center;
 		body.draw(color);
 
+		lEye.center = hyNearP(hyProduceP(center, hyNormalize(hyNearV(center, hyRotate(direction, M_PI / 6))), body.radius)); //Kell nearPoint? kell nearV?
+		lEye.draw(vec3(1,1,1));
+
+		rEye.center = hyNearP(hyProduceP(center, hyNormalize(hyNearV(center, hyRotate(direction, -M_PI / 6))), body.radius));
+		rEye.draw(vec3(1, 1, 1));
+
+		lPup.center = hyProduceP(lEye.center, hyDir(body.center, other.body.center), lEye.radius / 2);
+		lPup.draw(vec3(0,0,1));
+		rPup.center = hyProduceP(rEye.center, hyDir(body.center, other.body.center), rEye.radius / 2);
+		rPup.draw(vec3(0, 0, 1));
+
 		//mouth
-		mouth.center = hyProduceP(center, direction, body.radius);
-		mouth.radius = map(sin(delta_t), -1, 1, 0.05, 0.08);
-		mouth.draw(vec3(0, 0, 1));
+		mouth.center = hyNearP(hyProduceP(center, direction, body.radius));
+		mouth.radius = map(sin(t / 0.5f), -1, 1, body.radius / 4, body.radius / 3);
+		mouth.draw(vec3(1,0,1));
 
-		lEye.center = hyNearP(hyProduceP(center, (hyRotate(direction, 0.5)), body.radius));
-		lEye.draw(vec3(1, 1, 1));
-
+		
 	}
 
 	void rotate(bool left) {
@@ -204,6 +218,7 @@ struct Hami {
 		center = hyMoveP(center, direction, delta);
 		direction = hyNormalize(hyNearV(center, hyMoveV(center, direction, delta)));
 		center = hyNearP(center);
+
 		path.push_back(hyProject(center));
 
 		//printf("%.2f %.2f %.2f\n", center.x, center.y, center.z);
@@ -218,7 +233,9 @@ void onInitialization() {
 	renderer = new Renderer();
 
 	piros = Hami(vec3(0,0,1));
-	zold = Hami(vec3(2, 2, 3), vec3(2,-2,0));
+	zold = Hami(vec3(1, 0.75, sqrt(2.5625)), vec3(2,-2,0));
+	printf("%.2f\n", hyDot(zold.center, zold.center));
+	//zold = Hami(vec3(2, 2, 3), vec3(2,-2,0));
 
 	for (int i = 0; i < ncircleVertices; i++) {
 		float angle = M_PI * 2.0f * i / ncircleVertices;
@@ -231,19 +248,21 @@ void onDisplay() {
 	glClearColor(0.5f, 0.5f, 0.5f, 0);
 	glClear(GL_COLOR_BUFFER_BIT);
 	renderer->DrawGPU(GL_TRIANGLE_FAN, circlePoints, vec3(0, 0, 0));
+	renderer->DrawGPU(GL_LINE_STRIP, piros.path, vec3(1, 1, 1));
+	renderer->DrawGPU(GL_LINE_STRIP, zold.path, vec3(1, 1, 1));
 	
-	piros.draw(vec3(1,0,0));
-	zold.draw(vec3(0, 1, 0));
+	zold.draw(vec3(0, 1, 0), piros);
+	piros.draw(vec3(1,0,0), zold);
 
 	glutSwapBuffers();
 }
 
 void onIdle() {
-	t = glutGet(GLUT_ELAPSED_TIME);
+	t = glutGet(GLUT_ELAPSED_TIME) / 1000.0f;
 	//printf("%.3f\n", t - delta_t);
-	if (t - delta_t > 60) {
+	/*if (t - delta_t > 60) {
 		delta_t = t;
-	}
+	}*/
 	/*if (t - delta_t > 15) {
 		if (keys['e']) { piros.move(0.01); }
 		glutPostRedisplay();
