@@ -247,8 +247,8 @@ void onIdle() {
 			zold.move(moveVal);
 			zold.rotate(false);
 			if (keys['e']) { piros.move(moveVal); }
-			if (keys['s']) { piros.rotate(true); }
-			if (keys['f']) { piros.rotate(false); }
+			if (keys['s']) { piros.rotate(false); }
+			if (keys['f']) { piros.rotate(true); }
 		}
 		glutPostRedisplay();
 	}
