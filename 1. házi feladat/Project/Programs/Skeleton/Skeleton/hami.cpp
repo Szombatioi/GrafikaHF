@@ -1,4 +1,4 @@
-﻿//=============================================================================================
+//=============================================================================================
 // Mintaprogram: Zold haromszog. Ervenyes 2019. osztol.
 //
 // A beadott program csak ebben a fajlban lehet, a fajl 1 byte-os ASCII karaktereket tartalmazhat, BOM kihuzando.
