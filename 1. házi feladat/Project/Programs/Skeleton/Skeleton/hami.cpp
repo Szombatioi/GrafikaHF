@@ -183,8 +183,8 @@ struct Hami {
 		body.center = center;
 		lEye.center = hyNormalize(hyProduceP(center, hyNormalize(hyNearV(center, hyRotate(center, direction, M_PI / 6))), body.radius));
 		rEye.center = hyNormalize(hyProduceP(center, hyNormalize(hyNearV(center, hyRotate(center, direction, -M_PI / 6))), body.radius));
-		lPup.center = hyProduceP(lEye.center, hyNearV(lEye.center, hyDir(body.center, other.body.center)), 3 * lEye.radius / 4);
-		rPup.center = hyProduceP(rEye.center, hyNearV(rEye.center, hyDir(body.center, other.body.center)), 3 * rEye.radius / 4);
+		lPup.center = hyNormalize(hyProduceP(lEye.center, hyNearV(lEye.center, hyDir(body.center, other.body.center)), 3 * lEye.radius / 4));
+		rPup.center = hyNormalize(hyProduceP(rEye.center, hyNearV(rEye.center, hyDir(body.center, other.body.center)), 3 * rEye.radius / 4));
 		mouth.center = hyNormalize(hyProduceP(center, direction, body.radius));
 		mouth.radius = map(sin(delta_t * 10.0f), -1, 1, body.radius / 4, body.radius / 3);
 
@@ -243,7 +243,7 @@ void onIdle() {
 	delta_t = t / 1000.0f;
 	if (t - 1000/60 > delta_t) { 
 		int s = (t - delta_t) * 60 / 1000;
-		for (int i = 0; i < s; i++) {
+		for (int i = 0; i < s; i+=s) {
 			zold.move(moveVal);
 			zold.rotate(false);
 			if (keys['e']) { piros.move(moveVal); }
