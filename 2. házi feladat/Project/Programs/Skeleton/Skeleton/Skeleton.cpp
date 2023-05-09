@@ -130,9 +130,20 @@ public:
 	}
 };
 
-/*class Square : public Intersectable {
-	Triangle 
-};*/
+class Cube : public Intersectable {
+	std::vector<Triangle> triangles;
+public:
+	Cube(std::vector<Triangle> t) {
+		triangles = t;
+	}
+	Hit intersect(const Ray& ray) {
+		Hit hit;
+		for (Triangle t : triangles) {
+			if(hit.t < 0) hit = t.intersect(ray);
+		}
+		return hit;
+	}
+};
 
 class Scene {
 	std::vector<Intersectable*> objects;
@@ -163,35 +174,55 @@ public:
 		G(vec3(1.0,  1.0,  0.0)),		//7
 		H(vec3(1.0,  1.0,  1.0));		//8
 
-		//Jobb távolabbi oldal
-		std::vector<vec3> cubeTriangles = {A,G,E};
-		objects.push_back(new Triangle(cubeTriangles, material));
+		std::vector<Triangle> triangles;
+		std::vector<vec3> cubeTriangles = { A,G,E };
+		triangles.push_back(Triangle(cubeTriangles, material));
 		cubeTriangles = { A,C,G };
-		objects.push_back(new Triangle(cubeTriangles, material));
-		
-
-		//Bal távolabbi oldal
+		triangles.push_back(Triangle(cubeTriangles, material));
 		cubeTriangles = { A,D,C };
-		objects.push_back(new Triangle(cubeTriangles, material));
-		cubeTriangles = { A,B,D };
-		objects.push_back(new Triangle(cubeTriangles, material));
-
+		triangles.push_back(Triangle(cubeTriangles, material));
+		cubeTriangles = { A,B, D };
+		triangles.push_back(Triangle(cubeTriangles, material));
 		cubeTriangles = { C,H,G };
-		objects.push_back(new Triangle(cubeTriangles, material));
+		triangles.push_back(Triangle(cubeTriangles, material));
 		cubeTriangles = { C,D,H };
-		objects.push_back(new Triangle(cubeTriangles, material));
-
-		//Jobb közelebbi oldal
-		/*cubeTriangles = { E,G,H };
-		objects.push_back(new Triangle(cubeTriangles, material));
-		cubeTriangles = { E,H,F };
-		objects.push_back(new Triangle(cubeTriangles, material));*/
-
-		//Alsó oldal
+		triangles.push_back(Triangle(cubeTriangles, material));
 		cubeTriangles = { A,E,F };
-		objects.push_back(new Triangle(cubeTriangles, material));
+		triangles.push_back(Triangle(cubeTriangles, material));
 		cubeTriangles = { A,F,B };
-		objects.push_back(new Triangle(cubeTriangles, material));
+		triangles.push_back(Triangle(cubeTriangles, material));
+		
+		objects.push_back(new Cube(triangles));
+
+		////Jobb távolabbi oldal
+		//std::vector<vec3> cubeTriangles = {A,G,E};
+		//objects.push_back(new Triangle(cubeTriangles, material));
+		//cubeTriangles = { A,C,G };
+		//objects.push_back(new Triangle(cubeTriangles, material));
+		//
+
+		////Bal távolabbi oldal
+		//cubeTriangles = { A,D,C };
+		//objects.push_back(new Triangle(cubeTriangles, material));
+		//cubeTriangles = { A,B,D };
+		//objects.push_back(new Triangle(cubeTriangles, material));
+
+		//cubeTriangles = { C,H,G };
+		//objects.push_back(new Triangle(cubeTriangles, material));
+		//cubeTriangles = { C,D,H };
+		//objects.push_back(new Triangle(cubeTriangles, material));
+
+		////Jobb közelebbi oldal
+		///*cubeTriangles = { E,G,H };
+		//objects.push_back(new Triangle(cubeTriangles, material));
+		//cubeTriangles = { E,H,F };
+		//objects.push_back(new Triangle(cubeTriangles, material));*/
+
+		////Alsó oldal
+		//cubeTriangles = { A,E,F };
+		//objects.push_back(new Triangle(cubeTriangles, material));
+		//cubeTriangles = { A,F,B };
+		//objects.push_back(new Triangle(cubeTriangles, material));
 
 		//Bal közelebbi oldal
 		/*cubeTriangles = { B,F,H };
