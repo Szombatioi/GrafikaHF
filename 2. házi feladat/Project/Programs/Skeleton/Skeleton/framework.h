@@ -40,13 +40,13 @@ struct vec2 {
 	vec2 operator-() const { return vec2(-x, -y); }
 };
 
-inline float dot(const vec2& v1, const vec2& v2) { //skaláris szorzat a1*a2 = x1*x2 + y1*y2
+inline float dot(const vec2& v1, const vec2& v2) {
 	return (v1.x * v2.x + v1.y * v2.y);
 }
 
-inline float length(const vec2& v) { return sqrtf(dot(v, v)); } //vektor hossza |v| = sqrt(x^2+y^2)
+inline float length(const vec2& v) { return sqrtf(dot(v, v)); }
 
-inline vec2 normalize(const vec2& v) { return v * (1 / length(v)); } //egységvektor képzése
+inline vec2 normalize(const vec2& v) { return v * (1 / length(v)); }
 
 inline vec2 operator*(float a, const vec2& v) { return vec2(v.x * a, v.y * a); }
 
@@ -72,7 +72,7 @@ inline float length(const vec3& v) { return sqrtf(dot(v, v)); }
 
 inline vec3 normalize(const vec3& v) { return v * (1 / length(v)); }
 
-inline vec3 cross(const vec3& v1, const vec3& v2) { //vektoriális szorzat
+inline vec3 cross(const vec3& v1, const vec3& v2) {
 	return vec3(v1.y * v2.z - v1.z * v2.y, v1.z * v2.x - v1.x * v2.z, v1.x * v2.y - v1.y * v2.x);
 }
 
