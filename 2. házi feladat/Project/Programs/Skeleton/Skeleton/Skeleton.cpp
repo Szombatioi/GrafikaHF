@@ -113,7 +113,7 @@ public:
 	}
 	Hit intersect(const Ray& ray) {
 		Hit hit;
-		//TODO: ha hit, akkor n felénk néz-e? Ha igen, skip
+		//TODO: ha hit, akkor n felï¿½nk nï¿½z-e? Ha igen, skip
 		float t = dot((A - ray.start), normal) / dot(ray.dir, normal);
 		if (t < 0) return hit;
 		vec3 p = ray.start + t * ray.dir;
@@ -152,14 +152,13 @@ class Scene {
 	vec3 La; //ambiens fï¿½ny
 public:
 	void build() {
-		vec3 eye = vec3(1.8f, 0.5f, 1.8f), vup = vec3(0, 1, 0), lookat = vec3(0,0.5,0);
+		vec3 eye = vec3(1.9f, 0.7f, 1.9f), vup = vec3(0, 1, 0), lookat = vec3(0,0.5,0);
 		float fov = 45 * M_PI / 180;
 		camera.set(eye, lookat, vup, fov);
 
 		La = vec3(0.0f, 0.0f, 0.0f);
-		vec3 lightDirection(1,0.3,1), Le(2,2,2);
+		vec3 lightDirection(2,0.5,3), Le(2,2,2);
 		lights.push_back(new Light(lightDirection, Le));
-		
 
 		//2 material kï¿½szï¿½tï¿½se
 		vec3 kd1(0.3f, 0.3f, 0.3f), ks(2, 2, 2); //diffï¿½z ï¿½s spekulï¿½ris visszaverï¿½dï¿½si tï¿½nyezï¿½k (kell?)
@@ -191,40 +190,44 @@ public:
 		triangles.push_back(Triangle(cubeTriangles, material));
 		cubeTriangles = { A,F,B };
 		triangles.push_back(Triangle(cubeTriangles, material));
+		cubeTriangles = { C,H,G };
+		triangles.push_back(Triangle(cubeTriangles, material));
+		cubeTriangles = { C,D,H };
+		triangles.push_back(Triangle(cubeTriangles, material));
 		
 		objects.push_back(new Cube(triangles));
 
-		////Jobb távolabbi oldal
+		////Jobb tï¿½volabbi oldal
 		//std::vector<vec3> cubeTriangles = {A,G,E};
 		//objects.push_back(new Triangle(cubeTriangles, material));
 		//cubeTriangles = { A,C,G };
 		//objects.push_back(new Triangle(cubeTriangles, material));
 		//
 
-		////Bal távolabbi oldal
+		////Bal tï¿½volabbi oldal
 		//cubeTriangles = { A,D,C };
 		//objects.push_back(new Triangle(cubeTriangles, material));
 		//cubeTriangles = { A,B,D };
 		//objects.push_back(new Triangle(cubeTriangles, material));
 
-		//cubeTriangles = { C,H,G };
-		//objects.push_back(new Triangle(cubeTriangles, material));
-		//cubeTriangles = { C,D,H };
-		//objects.push_back(new Triangle(cubeTriangles, material));
+		// cubeTriangles = { C,H,G };
+		// objects.push_back(new Triangle(cubeTriangles, material));
+		// cubeTriangles = { C,D,H };
+		// objects.push_back(new Triangle(cubeTriangles, material));
 
-		////Jobb közelebbi oldal
+		////Jobb kï¿½zelebbi oldal
 		///*cubeTriangles = { E,G,H };
 		//objects.push_back(new Triangle(cubeTriangles, material));
 		//cubeTriangles = { E,H,F };
 		//objects.push_back(new Triangle(cubeTriangles, material));*/
 
-		////Alsó oldal
+		////Alsï¿½ oldal
 		//cubeTriangles = { A,E,F };
 		//objects.push_back(new Triangle(cubeTriangles, material));
 		//cubeTriangles = { A,F,B };
 		//objects.push_back(new Triangle(cubeTriangles, material));
 
-		//Bal közelebbi oldal
+		//Bal kï¿½zelebbi oldal
 		/*cubeTriangles = { B,F,H };
 		objects.push_back(new Triangle(cubeTriangles, material));
 		cubeTriangles = { B,H,D };
@@ -232,7 +235,7 @@ public:
 
 		kd1 = vec3(1.0f, 0.3f, 0.3f), ks = vec3(2, 2, 2);
 		material = new Material(kd1, ks, 50); //50?
-		objects.push_back(new Sphere(normalize(lightDirection), 0.2, material));
+		objects.push_back(new Sphere(normalize(eye+lightDirection), 0.2, material));
 		
 	}
 
