@@ -1,12 +1,32 @@
 ﻿  Skeleton.cpp
 C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\2. házi feladat\Project\Programs\Skeleton\Skeleton\framework.h(167,17): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
 C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(12): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(156,1): warning C4305: 'initializing': truncation from 'double' to 'float'
-C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(160,1): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(235,1): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(257,1): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(258,1): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(294,1): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(295,1): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(296,1): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(297,1): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(298,1): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(299,1): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(300,1): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(301,1): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(302,1): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(303,1): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(304,1): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(305,1): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(306,1): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(307,1): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(308,1): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(309,1): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(310,1): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(311,1): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(312,1): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(313,1): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(553,17): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
   Generating code
-  79 of 382 functions (20.7%) were compiled, the rest were copied from previous compilation.
-    70 functions were new in current compilation
-    46 functions had inline decision re-evaluated but remain unchanged
+  7 of 463 functions ( 1.5%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    7 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
   Skeleton.vcxproj -> C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\2. házi feladat\Project\Programs\Skeleton\bin\Skeleton.exe
