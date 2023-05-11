@@ -165,7 +165,7 @@ public:
 };
 
 class Cube : public Intersectable {
-	std::vector<Square> sides; //6
+	std::vector<Square> sides;
 public:
 	
 	Cube(std::vector<Square> s) {
@@ -182,23 +182,11 @@ public:
 	}
 };
 
+
+//TODO: Triangles Square helyett
 class Icosahedron : public Intersectable {
-	//std::vector<Triangle> triangles;
 	std::vector<Square> sides;
 public:
-	/*Icosahedron(std::vector<Triangle> t) {
-		triangles = t;
-	}
-
-	Hit intersect(const Ray& ray) {
-		Hit bestHit;
-		for (Triangle t : triangles) {
-			Hit hit = t.intersect(ray);
-			if (hit.t > 0 && (bestHit.t < 0 || bestHit.t > hit.t)) bestHit = hit;
-		}
-		return bestHit;
-	}*/
-
 	Icosahedron(std::vector<Square> s) {
 		sides = s;
 	}
@@ -386,8 +374,8 @@ public:
 		sides.push_back(Square(C, D, A, B, material)); //bal hátsó oldal
 		sides.push_back(Square(E, F, A, B, material)); //jobb hátsó
 		sides.push_back(Square(F, H, B, D, material)); //tető
-		//sides.push_back(Square(G,H,E,F, material)); //jobb első oldal
-		//sides.push_back(Square(G,H,C,D, material)); //bal első oldal
+		sides.push_back(Square(G,H,E,F, material)); //jobb első oldal
+		sides.push_back(Square(G,H,C,D, material)); //bal első oldal
 		if(cube) objects.push_back(new Cube(sides));
 	}
 
