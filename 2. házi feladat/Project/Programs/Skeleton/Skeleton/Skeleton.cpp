@@ -1,5 +1,6 @@
 #include "framework.h"
-
+#include <algorithm>
+bool octa = false, cube = true;
 //TODO:
 //nyilatkozat
 //kommentek t�rl�se
@@ -119,7 +120,6 @@ public:
 
 	Hit intersect(const Ray& ray) {
 		Hit hit;
-		//TODO: ha hit, akkor n fel�nk n�z-e? Ha igen, skip
 		float t = dot((A - ray.start), normal) / dot(ray.dir, normal);
 		if (t < 0) return hit;
 		vec3 p = ray.start + t * ray.dir;
@@ -250,11 +250,11 @@ class Scene {
 	std::vector<Intersectable*> objects;
 	std::vector<Light*> lights;
 	Camera camera;
-	vec3 La; //ambiens f�ny
+	vec3 La;
 public:
 	void build() {
-		vec3 eye = vec3(3,4,5), vup = vec3(0, 1, 0), lookat = vec3(0,0,0);
-		//vec3 eye = vec3(2.5f, 1.5f, 2.5f), vup = vec3(0, 1, 0), lookat = vec3(0,0.8,0);
+		//vec3 eye = vec3(-4,1.5,4), vup = vec3(0, 1, 0), lookat = vec3(0,0,0); //tests
+		vec3 eye = vec3(2.5f, 1.5f, 2.5f), vup = vec3(0, 1, 0), lookat = vec3(0,0.8,0);
 		float fov = 45 * M_PI / 180;
 		camera.set(eye, lookat, vup, fov);
 
@@ -262,195 +262,88 @@ public:
 		vec3 lightDirection(2,0.5,3), Le(2,2,2);
 		lights.push_back(new Light(lightDirection, Le));
 
-		//2 material k�sz�t�se
-		vec3 kd1(0.3f, 0.3f, 0.3f), ks(2, 2, 2); //diff�z �s spekul�ris visszaver�d�si t�nyez�k (kell?)
-		Material* material = new Material(kd1, ks, 50); //50?
-
-		
-		//TODO: lehet a Z és Y koordinátákat invertálni kell majd
-
-		///Cube
-		//vec3 A(vec3(-1.0, -1.0, 0.0)),	//1
-		//	B(vec3(-1.0, -1.0, 2.0)),		//2
-		//	C(vec3(-1.0, 1.0, 0.0)),		//3
-		//	D(vec3(-1.0, 1.0, 2.0)),		//4
-		//	E(vec3(1.0, -1.0, 0.0)),		//5
-		//	F(vec3(1.0, -1.0, 2.0)),		//6
-		//	G(vec3(1.0, 1.0, 0.0)),		//7
-		//	H(vec3(1.0, 1.0, 2.0));		//8
-
-		//sides.push_back(Square(E, G, A, C, material)); //jobb hátsó oldal
-		//sides.push_back(Square(C, D, A, B, material)); //bal hátsó oldal
-		//sides.push_back(Square(E, F, A, B, material)); //padló
-		//sides.push_back(Square(F, H, B, D, material)); //bal első oldal
-		//sides.push_back(Square(G, H, E, F, material)); //jobb első oldal
-		//sides.push_back(Square(G, H, C, D, material)); //tető
-
+		vec3 kd1(0.3f, 0.3f, 0.3f), ks(2, 2, 2);
+		Material* material = new Material(kd1, ks, 50);
 
 		vec3 A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T;
 		std::vector<Square> sides;
 		std::vector<Triangle> triangles;
 
-		A = vec3(-0.57735, -0.57735, 0.57735),		//1
-		B = vec3(0.934172, 0.356822, 0),			//2
-		C = vec3(0.934172, -0.356822, 0),			//3
-		D = vec3(-0.934172, 0.356822, 0),			//4
-		E = vec3(-0.934172, -0.356822, 0),			//5
-		F = vec3(0, 0.934172, 0.356822),			//6
-		G = vec3(0, 0.934172, -0.356822),			//7
-		H = vec3(0.356822, 0, -0.934172),			//8
-		I = vec3(-0.356822, 0, -0.934172),			//9
-		J = vec3(0, -0.934172, -0.356822),			//10
-		K = vec3(0, -0.934172, 0.356822),			//11
-		L = vec3(0.356822, 0, 0.934172),			//12
-		M = vec3(-0.356822, 0, 0.934172),			//13
-		N = vec3(0.57735, 0.57735, -0.57735),		//14
-		O = vec3(0.57735, 0.57735, 0.57735),		//15
-		P = vec3(-0.57735, 0.57735, -0.57735),		//16
-		Q = vec3(-0.57735, 0.57735, 0.57735),		//17
-		R = vec3(0.57735, -0.57735, -0.57735),		//18
-		S = vec3(0.57735, -0.57735, 0.57735),		//19
-		T = vec3(-0.57735, -0.57735, -0.57735);		//20
+		A = vec3(0, 0.425 , -0.265),
+		B = vec3(0.425, 0.265, 0),
+		C = vec3(0.425, -0.265, 0),
+		D = vec3(-0.425, -0.265, 0),
+		E = vec3(-0.425, 0.265, 0),
+		F = vec3(-0.265, 0, 0.425),
+		G = vec3(0.265, 0, 0.425),
+		H = vec3(0.265, 0, -0.425),
+		I = vec3(-0.265, 0, -0.425),
+		J = vec3(0, -0.425 , -0.265),
+		K = vec3(0, -0.425, 0.265),
+		L = vec3(0, 0.425, 0.265);
 
-		triangles.push_back(Triangle(S, C, B, material));
-		triangles.push_back(Triangle(L, S, B, material));
-		triangles.push_back(Triangle(O, L, B, material));
-		triangles.push_back(Triangle(H, N, B, material));
-		triangles.push_back(Triangle(R, H, B, material));
-		triangles.push_back(Triangle(C, R, B, material));
-		triangles.push_back(Triangle(T, E, D, material));
-		triangles.push_back(Triangle(I, T, D, material));
-		triangles.push_back(Triangle(P, I, D, material));
-		triangles.push_back(Triangle(M, Q, D, material));
-		triangles.push_back(Triangle(A, M, D, material));
-		triangles.push_back(Triangle(E, A, D, material));
-		triangles.push_back(Triangle(G, P, D, material));
-		triangles.push_back(Triangle(F, G, D, material));
-		triangles.push_back(Triangle(Q, F, D, material));
-		triangles.push_back(Triangle(F, O, B, material));
-		triangles.push_back(Triangle(G, F, B, material));
-		triangles.push_back(Triangle(N, G, B, material));
-		triangles.push_back(Triangle(J, R, C, material));
-		triangles.push_back(Triangle(K, J, C, material));
-		triangles.push_back(Triangle(S, K, C, material));
-		triangles.push_back(Triangle(K, A, E, material));
-		triangles.push_back(Triangle(J, K, E, material));
-		triangles.push_back(Triangle(T, J, E, material));
-		triangles.push_back(Triangle(T, I, H, material));
-		triangles.push_back(Triangle(J, T, H, material));
-		triangles.push_back(Triangle(R, J, H, material));
-		triangles.push_back(Triangle(I, P, G, material));
-		triangles.push_back(Triangle(H, I, G, material));
-		triangles.push_back(Triangle(N, H, G, material));
-		triangles.push_back(Triangle(L, O, F, material));
-		triangles.push_back(Triangle(M, L, F, material));
-		triangles.push_back(Triangle(Q, M, F, material));
-		triangles.push_back(Triangle(M, A, K, material));
-		triangles.push_back(Triangle(L, M, K, material));
-		triangles.push_back(Triangle(S, L, K, material));
-		objects.push_back(new Dodecahedron(triangles));
+		float v = 0.5;
+		A.y += v;
+		B.y += v;
+		C.y += v;
+		D.y += v;
+		E.y += v;
+		F.y += v;
+		G.y += v;
+		H.y += v;
+		I.y += v;
+		J.y += v;
+		K.y += v;
+		L.y += v;
 
-		/////Icosahedron - triangles
-		//A = vec3(0, -0.525731, 0.850651),	//1
-		//B = vec3(0.85, 0, 0.53),	//2
-		//C = vec3(0.850651, 0, -0.525731),	//3
-		//D = vec3(-0.850651, 0, -0.525731),	//4
-		//E = vec3(-0.850651, 0, 0.525731),	//5
-		//F = vec3(-0.53, 0.85, 0),	//6
-		//G = vec3(0.53, 0.85, 0),	//7
-		//H = vec3(0.525731, -0.850651, 0);	//8
-		//I = (-0.525731, -0.850651, 0),		//9
-		//J = (0, -0.525731, -0.850651),		//10
-		//K = (0, 0.525731, -0.850651),		//11
-		//L = (0, 0.53, 0.85);		//12
+		A.z += v;
+		B.z += v;
+		C.z += v;
+		D.z += v;
+		E.z += v;
+		F.z += v;
+		G.z += v;
+		H.z += v;
+		I.z += v;
+		J.z += v;
+		K.z += v;
+		L.z += v;
 
+		A.x -= v/2;
+		B.x -= v/2;
+		C.x -= v/2;
+		D.x -= v/2;
+		E.x -= v/2;
+		F.x -= v/2;
+		G.x -= v/2;
+		H.x -= v/2;
+		I.x -= v/2;
+		J.x -= v/2;
+		K.x -= v/2;
+		L.x -= v/2;
 
-		//
-		//sides = std::vector<Square>();
-		////sides.push_back(Square(G,B,C,H, material));
-		//sides.push_back(Square(B, L, G, F, material));
-		////sides.push_back(Square(L,A,B,H, material));
-		////sides.push_back(Square(C, G, K, F, material));
-		////sides.push_back(Square(K,C,J,H, material)); ///?
-		//////sides.push_back(Square(A,I,H,J, material)); ///!
-		//////sides.push_back(Square(A,I,F,D, material)); ///!
-		//////sides.push_back(Square(I,J,D,K, material)); ///!
-		//////sides.push_back(Square(A,L,E,F, material)); ///!
-		////sides.push_back(Square(E,F,D,K, material));
-		//
-		///*triangles = std::vector<Triangle>();
-		//triangles.push_back(Triangle(B, C, G, material));
-		//triangles.push_back(Triangle(B, H, C, material));
-		//sides.push_back(Square(triangles));
+		sides = std::vector<Square>();
+		sides.push_back(Square(G,B,C,H, material));
+		sides.push_back(Square(B, L, G, F, material));
+		sides.push_back(Square(L,A,B,H, material));
+		sides.push_back(Square(C, G, K, F, material));
+		sides.push_back(Square(K,C,J,H, material));
+		sides.push_back(Square(A,I,H,J, material));
+		sides.push_back(Square(A,I,F,D, material));
+		sides.push_back(Square(I,J,D,K, material));
+		sides.push_back(Square(A,L,E,F, material));
+		sides.push_back(Square(E,F,D,K, material));
+		
+		objects.push_back(new Icosahedron(sides));
 
-		//triangles = std::vector<Triangle>();
-		//triangles.push_back(Triangle(D, E, F, material));
-		//triangles.push_back(Triangle(E, D, I, material));
-		//sides.push_back(Square(triangles));*/
-
-		///*triangles = std::vector<Triangle>();
-		//triangles.push_back(Triangle(G, F, L, material));
-		//triangles.push_back(Triangle(F, G, K, material));
-		//sides.push_back(Square(triangles));
-
-		//triangles = std::vector<Triangle>();
-		//triangles.push_back(Triangle(J, K, C, material));
-		//triangles.push_back(Triangle(K, J, D, material));
-		//sides.push_back(Square(triangles));
-
-		//triangles = std::vector<Triangle>();
-		//triangles.push_back(Triangle(H, I, J, material));
-		//triangles.push_back(Triangle(I, H, A, material));
-		//sides.push_back(Square(triangles));
-
-		//triangles = std::vector<Triangle>();
-		//triangles.push_back(Triangle(L, A, B, material));
-		//triangles.push_back(Triangle(A, L, E, material));
-		//sides.push_back(Square(triangles));
-
-		//triangles = std::vector<Triangle>();
-		//triangles.push_back(Triangle(G, C, K, material));
-		//triangles.push_back(Triangle(B, G, L, material));
-		//sides.push_back(Square(triangles));
-
-		//triangles = std::vector<Triangle>();
-		//triangles.push_back(Triangle(D, F, K, material));
-		//triangles.push_back(Triangle(F, E, L, material));
-		//sides.push_back(Square(triangles));
-
-		//triangles = std::vector<Triangle>();
-		//triangles.push_back(Triangle(C, H, J, material));
-		//triangles.push_back(Triangle(H, B, A, material));
-		//sides.push_back(Square(triangles));
-
-		//triangles = std::vector<Triangle>();
-		//triangles.push_back(Triangle(D, J, I, material));
-		//triangles.push_back(Triangle(E, I, A, material));
-		//sides.push_back(Square(triangles));*/
-		//vec3 kd2 = vec3(1.0f, 0.3f, 0.3f);
-		//Material* material2 = new Material(kd2, ks, 50);
-		//objects.push_back(new Sphere(G, 0.1, material2));
-		//objects.push_back(new Sphere(B, 0.1, material2));
-		//objects.push_back(new Sphere(C, 0.1, material2));
-		//objects.push_back(new Sphere(H, 0.1, material2));
-
-		//kd2 = vec3(0.3f, 0.3f, 1.0f);
-		//material2 = new Material(kd2, ks, 50);
-		///*objects.push_back(new Sphere(G + vec3(epsilon, 0, 0), 0.1, material2));
-		//objects.push_back(new Sphere(B + vec3(epsilon, 0, 0), 0.1, material2));*/
-		//objects.push_back(new Sphere(L + vec3(epsilon, 0,0), 0.1, material2));
-		//objects.push_back(new Sphere(F + vec3(epsilon, 0,0), 0.1, material2));
-		//
-
-		//objects.push_back(new Icosahedron(sides));
-
+		
 		//Octahedron - squares
-		A = vec3(0.5, 0.5, 0),	//1
-		B = vec3(0, 0, 0),		//2
-		C = vec3(-0.5, 0.5, 0),	//3
-		D = vec3(0, 1, 0),		//4
-		E = vec3(0, 0.5, 0.5),	//5
-		F = vec3(0, 0.5, -0.5);	//6
+		A = vec3(0.5, 0.5, 0),
+		B = vec3(0, 0, 0),	
+		C = vec3(-0.5, 0.5, 0),
+		D = vec3(0, 1, 0),	
+		E = vec3(0, 0.5, 0.5),
+		F = vec3(0, 0.5, -0.5);
 
 
 		//TEST: eltolás
@@ -475,30 +368,27 @@ public:
 		sides.push_back(Square(C,D,E,A, material));
 		sides.push_back(Square(A,B,F,C, material));
 		sides.push_back(Square(C,D,F,A, material));
-		objects.push_back(new Octahedron(sides));
+		if(octa) objects.push_back(new Octahedron(sides));
 
 
 		//Y és Z felcserélve
-		A = vec3(-1.0, 0.0, -1.0),			//1
-			B = vec3(-1.0, 2.0, -1.0),		//2
-			C = vec3(-1.0, 0.0, 1.0),		//3
-			D = vec3(-1.0, 2.0, 1.0),		//4
-			E = vec3(1.0, 0.0, -1.0),		//5
-			F = vec3(1.0, 2.0, -1.0),		//6
-			G = vec3(1.0, 0.0, 1.0),		//7
-			H = vec3(1.0, 2.0, 1.0);		//8
+		A = vec3(-1.0, 0.0, -1.0),
+		B = vec3(-1.0, 2.0, -1.0),
+		C = vec3(-1.0, 0.0, 1.0),
+		D = vec3(-1.0, 2.0, 1.0),
+		E = vec3(1.0, 0.0, -1.0),
+		F = vec3(1.0, 2.0, -1.0),
+		G = vec3(1.0, 0.0, 1.0),
+		H = vec3(1.0, 2.0, 1.0);
 
 		
 		sides.push_back(Square(E, G, A, C, material)); //padló
 		sides.push_back(Square(C, D, A, B, material)); //bal hátsó oldal
 		sides.push_back(Square(E, F, A, B, material)); //jobb hátsó
 		sides.push_back(Square(F, H, B, D, material)); //tető
-		sides.push_back(Square(G,H,E,F, material)); //jobb első oldal
-		sides.push_back(Square(G,H,C,D, material)); //bal első oldal
-		objects.push_back(new Cube(sides));
-
-		//objects.push_back(new Sphere(normalize(eye+lightDirection), 0.2, material));
-		
+		//sides.push_back(Square(G,H,E,F, material)); //jobb első oldal
+		//sides.push_back(Square(G,H,C,D, material)); //bal első oldal
+		if(cube) objects.push_back(new Cube(sides));
 	}
 
 	void render(std::vector<vec4>& image) { //virt. vil�g lef�nyk�pez�se
@@ -515,7 +405,9 @@ public:
 		Hit bestHit;
 		for (Intersectable* obj : objects) {
 			Hit hit = obj->intersect(ray);
-			if (hit.t > 0 && (bestHit.t < 0 || bestHit.t > hit.t)) bestHit = hit;
+			if (hit.t > 0 && (bestHit.t < 0 || bestHit.t > hit.t)) {
+				bestHit = hit;
+			}
 		}
 		if (dot(ray.dir, bestHit.normal) > 0) bestHit.normal = bestHit.normal * (-1);
 		return bestHit;
@@ -523,20 +415,22 @@ public:
 
 	//TODO: yet wrong
 	Hit secondIntersect(Ray ray) {
-		std::vector<Hit> hits;
-		Hit bestHit;
+		Hit bestHit, secondHit;
+		
 		for (Intersectable* obj : objects) {
 			Hit hit = obj->intersect(ray);
-			if (hit.t > 0 && (bestHit.t < 0 || bestHit.t > hit.t)) bestHit = hit;
-			hits.push_back(hit);
+			if (hit.t > 0 && (bestHit.t < 0 || bestHit.t > hit.t))  bestHit = hit;
 		}
-
-		Hit hit;
-		for (Hit h : hits) {
-			if (hit.t < 0 || (bestHit.t != h.t && hit.t > h.t)) hit = h;
+		
+		for (Intersectable* obj : objects) {
+			Hit hit = obj->intersect(ray);
+			if (hit.t > 0 && (secondHit.t < 0 || secondHit.t == bestHit.t)) {
+				secondHit = hit;
+			}
 		}
-		if (dot(ray.dir, hit.normal) > 0) hit.normal = hit.normal * (-1);
-		return hit;
+		//if (dot(ray.dir, bestHit.normal) > 0) bestHit.normal = bestHit.normal * (-1);
+		if (dot(ray.dir, secondHit.normal) > 0) secondHit.normal = secondHit.normal * (-1);
+		return secondHit;
 
 	}
 

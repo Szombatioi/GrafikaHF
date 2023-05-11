@@ -11,12 +11,18 @@ for line in f:
     
     if line.startswith("v"):
         print(f"{letters[useful]}(", end="")
-        line = line[3:]
-        print(",".join(line.split("  ")), end="")
+        line = line[3:].split("  ")
+        for i in range(len(line)):
+            if line[i] == "":
+                continue
+            if i > 0 and i < len(line):
+                print(",", end="")
+            print(round(float(line[i]),2), end="")
+        #print(",".join(round(float(line.split("  ")))), end="")
         print("),")
         useful += 1
 
-    if line.startswith("f"):
+    elif line.startswith("f"):
         line = line[3:].split("  ")
         for i in range(len(line)):
             if line[i] == "":
