@@ -253,8 +253,8 @@ class Scene {
 	vec3 La; //ambiens f�ny
 public:
 	void build() {
-		//vec3 eye = vec3(3,2,5), vup = vec3(0, 1, 0), lookat = vec3(0,0,0);
-		vec3 eye = vec3(2.5f, 1.5f, 2.5f), vup = vec3(0, 1, 0), lookat = vec3(0,0.8,0);
+		vec3 eye = vec3(3,4,5), vup = vec3(0, 1, 0), lookat = vec3(0,0,0);
+		//vec3 eye = vec3(2.5f, 1.5f, 2.5f), vup = vec3(0, 1, 0), lookat = vec3(0,0.8,0);
 		float fov = 45 * M_PI / 180;
 		camera.set(eye, lookat, vup, fov);
 
@@ -493,8 +493,8 @@ public:
 		sides.push_back(Square(C, D, A, B, material)); //bal hátsó oldal
 		sides.push_back(Square(E, F, A, B, material)); //jobb hátsó
 		sides.push_back(Square(F, H, B, D, material)); //tető
-		//sides.push_back(Square(G,H,E,F, material)); //jobb első oldal
-		//sides.push_back(Square(G,H,C,D, material)); //bal első oldal
+		sides.push_back(Square(G,H,E,F, material)); //jobb első oldal
+		sides.push_back(Square(G,H,C,D, material)); //bal első oldal
 		objects.push_back(new Cube(sides));
 
 		//objects.push_back(new Sphere(normalize(eye+lightDirection), 0.2, material));
@@ -550,7 +550,8 @@ public:
 	vec3 trace(Ray ray, int depth = 0) {
 		//Hit hit = secondIntersect(ray);
 		Hit hit = firstIntersect(ray);
-		//La = 0.2 * (1 + dot(normalize(hit.normal), normalize(ray.dir)));
+		float val = 0.2 * (1 + dot(normalize(hit.normal), normalize(ray.dir)));
+		La = vec3(val,val,val);
 		if (hit.t < 0) return La;
 		
 		vec3 outRadiance = hit.material->ka * La;
