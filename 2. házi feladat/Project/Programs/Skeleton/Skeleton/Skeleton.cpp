@@ -136,6 +136,30 @@ public:
 	}
 };
 
+class Cone : public Intersectable {
+	vec3 p, n;
+	float height, angle;
+	Material* material;
+public:
+	Cone(vec3 _p, vec3 _n, float h, float a, Material* mat) : p(_p), n(normalize(_n)), material(mat) { height = h; angle = a; }
+	Hit intersect(const Ray& ray) {
+		Hit hit;
+		float cos_square = pow(cosf(angle), 2);
+		float a = pow(dot(ray.dir, n), 2) - dot(ray.dir, ray.dir) * cos_square; //TODO: lehet (dir*n)^2
+		
+		vec3 xyz = ;
+		float b = 2 * dot(ray.dir, xyz);
+		//float b = 2 * dot(ray.dir, ray.start - p) * (dot(n,n) * cos_square);
+		float c = pow(ray.start - p, 2) * (dot(n,n) * cos_square);
+
+		vec3 point;
+		//////
+		hit.normal = 2*((point - p) * n)*n - 2*(point - p)*cos_square;
+		hit.material = material;
+		return hit;
+	}
+};
+
 class Square : public Intersectable {
 	std::vector<Triangle> triangles; //2
 public:
@@ -247,10 +271,11 @@ public:
 		camera.set(eye, lookat, vup, fov);
 
 		La = vec3(0.0f, 0.0f, 0.0f);
-		vec3 lightDirection(2,0.5,3), Le(2,2,2);
+		vec3 lightDirection(0.1,0.1,0.1), Le(1.5f, 1.5f, 1.5f);
+		//vec3 lightDirection(2,0.5,3), Le(1.5f, 1.5f, 1.5f);
 		lights.push_back(new Light(lightDirection, Le));
 
-		vec3 kd1(0.3f, 0.3f, 0.3f), ks(2, 2, 2);
+		vec3 kd1(0.3f, 0.3f, 0.3f), ks(1,1,1);
 		Material* material = new Material(kd1, ks, 50);
 
 		vec3 A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T;
@@ -271,44 +296,18 @@ public:
 		L = vec3(0, 0.425, 0.265);
 
 		float v = 0.5;
-		A.y += v;
-		B.y += v;
-		C.y += v;
-		D.y += v;
-		E.y += v;
-		F.y += v;
-		G.y += v;
-		H.y += v;
-		I.y += v;
-		J.y += v;
-		K.y += v;
-		L.y += v;
-
-		A.z += v;
-		B.z += v;
-		C.z += v;
-		D.z += v;
-		E.z += v;
-		F.z += v;
-		G.z += v;
-		H.z += v;
-		I.z += v;
-		J.z += v;
-		K.z += v;
-		L.z += v;
-
-		A.x -= v/2;
-		B.x -= v/2;
-		C.x -= v/2;
-		D.x -= v/2;
-		E.x -= v/2;
-		F.x -= v/2;
-		G.x -= v/2;
-		H.x -= v/2;
-		I.x -= v/2;
-		J.x -= v/2;
-		K.x -= v/2;
-		L.x -= v/2;
+		A.y += v;  A.z += v;  A.x -= v / 2;
+		B.y += v;  B.z += v;  B.x -= v / 2;
+		C.y += v;  C.z += v;  C.x -= v / 2;
+		D.y += v;  D.z += v;  D.x -= v / 2;
+		E.y += v;  E.z += v;  E.x -= v / 2;
+		F.y += v;  F.z += v;  F.x -= v / 2;
+		G.y += v;  G.z += v;  G.x -= v / 2;
+		H.y += v;  H.z += v;  H.x -= v / 2;
+		I.y += v;  I.z += v;  I.x -= v / 2;
+		J.y += v;  J.z += v;  J.x -= v / 2;
+		K.y += v;  K.z += v;  K.x -= v / 2;
+		L.y += v;  L.z += v;  L.x -= v / 2;
 
 		sides = std::vector<Square>();
 		sides.push_back(Square(G,B,C,H, material));
@@ -374,9 +373,15 @@ public:
 		sides.push_back(Square(C, D, A, B, material)); //bal hátsó oldal
 		sides.push_back(Square(E, F, A, B, material)); //jobb hátsó
 		sides.push_back(Square(F, H, B, D, material)); //tető
-		sides.push_back(Square(G,H,E,F, material)); //jobb első oldal
-		sides.push_back(Square(G,H,C,D, material)); //bal első oldal
+		//sides.push_back(Square(G,H,E,F, material)); //jobb első oldal
+		//sides.push_back(Square(G,H,C,D, material)); //bal első oldal
 		if(cube) objects.push_back(new Cube(sides));
+
+
+		/*vec3 kd2(1.0f, 0.3f, 0.3f);
+		Material* material2 = new Material(kd2, ks, 50);
+		objects.push_back(new Sphere(lightDirection, 0.1, material2));*/
+
 	}
 
 	void render(std::vector<vec4>& image) { //virt. vil�g lef�nyk�pez�se
@@ -434,7 +439,8 @@ public:
 		Hit hit = firstIntersect(ray);
 		float val = 0.2 * (1 + dot(normalize(hit.normal), normalize(ray.dir)));
 		La = vec3(val,val,val);
-		if (hit.t < 0) return La;
+		//if (hit.t < 0) return La;
+		if (hit.t < 0) return vec3(0.0f,0.0f,0.0f);
 		
 		vec3 outRadiance = hit.material->ka * La;
 		for (Light* light : lights) {
