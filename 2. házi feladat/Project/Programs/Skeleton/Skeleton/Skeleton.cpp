@@ -146,14 +146,21 @@ public:
 		Hit hit;
 		float cos_square = pow(cosf(angle), 2);
 		float a = pow(dot(ray.dir, n), 2) - dot(ray.dir, ray.dir) * cos_square; //TODO: lehet (dir*n)^2
+		float b = (dot(ray.dir, ray.start) - dot(ray.dir, p)) * (2 * dot(n, n) - 2 * cos_square);
+		float c = dot(n, n) * (dot(ray.start, ray.start) - dot(p,p) - 2*dot(ray.start, p)) - (dot(ray.start, ray.start) + dot(p,p) - 2*dot(ray.start, p))*cos_square;
 		
-		vec3 xyz = ;
-		float b = 2 * dot(ray.dir, xyz);
-		//float b = 2 * dot(ray.dir, ray.start - p) * (dot(n,n) * cos_square);
-		float c = pow(ray.start - p, 2) * (dot(n,n) * cos_square);
+		float discr = b * b - 4.0f * a * c;
+		if (discr < 0) return hit;
+		float sqrt_discr = sqrtf(discr);
+		float t1 = (-b + sqrt_discr) / 2.0f / a;	// t1 >= t2 for sure
+		float t2 = (-b - sqrt_discr) / 2.0f / a;
+		if (t1 <= 0) return hit;
+		hit.t = (t2 > 0) ? t2 : t1;
 
-		vec3 point;
-		//////
+		//TODO: height kiszűrése
+
+		vec3 point = ray.start + ray.dir * hit.t;
+		hit.position = point;
 		hit.normal = 2*((point - p) * n)*n - 2*(point - p)*cos_square;
 		hit.material = material;
 		return hit;
@@ -381,7 +388,7 @@ public:
 		/*vec3 kd2(1.0f, 0.3f, 0.3f);
 		Material* material2 = new Material(kd2, ks, 50);
 		objects.push_back(new Sphere(lightDirection, 0.1, material2));*/
-
+		objects.push_back(new Cone());
 	}
 
 	void render(std::vector<vec4>& image) { //virt. vil�g lef�nyk�pez�se
