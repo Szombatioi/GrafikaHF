@@ -1,6 +1,6 @@
 #include "framework.h"
 #include <algorithm>
-bool octa = false, cube = true;
+bool octa = false, cube = false, icosa = false;
 //TODO:
 //nyilatkozat
 //kommentek t�rl�se
@@ -141,7 +141,7 @@ class Cone : public Intersectable {
 	float height, angle;
 	Material* material;
 public:
-	Cone(vec3 _p, vec3 _n, float h, float a, Material* mat) : p(_p), n(normalize(_n)), material(mat) { height = h; angle = a; }
+	Cone(vec3 _p, vec3 _n, float h, float a, Material* mat) : p(_p), n(normalize(_n)), material(mat) { height = h; angle = a; printf("%lf - %lf - %lf\n", p.x, p.y, p.z);}
 	Hit intersect(const Ray& ray) {
 		Hit hit;
 		float cos_square = pow(cosf(angle), 2);
@@ -155,13 +155,14 @@ public:
 		float t1 = (-b + sqrt_discr) / 2.0f / a;	// t1 >= t2 for sure
 		float t2 = (-b - sqrt_discr) / 2.0f / a;
 		if (t1 <= 0) return hit;
+		//printf("?");
 		hit.t = (t2 > 0) ? t2 : t1;
 
 		//TODO: height kiszűrése
-
+		
 		vec3 point = ray.start + ray.dir * hit.t;
 		hit.position = point;
-		hit.normal = 2*((point - p) * n)*n - 2*(point - p)*cos_square;
+		hit.normal = normalize(2*((point - p) * n)*n - 2*(point - p)*cos_square);
 		hit.material = material;
 		return hit;
 	}
@@ -247,7 +248,7 @@ public:
 	}
 };
 
-class Dodecahedron : public Intersectable {
+/*class Dodecahedron : public Intersectable {
 	std::vector<Triangle> triangles;
 	std::vector<Square> sides;
 public:
@@ -263,7 +264,7 @@ public:
 		}
 		return bestHit;
 	}
-};
+};*/
 
 class Scene {
 	std::vector<Intersectable*> objects;
@@ -328,7 +329,7 @@ public:
 		sides.push_back(Square(A,L,E,F, material));
 		sides.push_back(Square(E,F,D,K, material));
 		
-		objects.push_back(new Icosahedron(sides));
+		if(icosa) objects.push_back(new Icosahedron(sides));
 
 		
 		//Octahedron - squares
@@ -388,7 +389,7 @@ public:
 		/*vec3 kd2(1.0f, 0.3f, 0.3f);
 		Material* material2 = new Material(kd2, ks, 50);
 		objects.push_back(new Sphere(lightDirection, 0.1, material2));*/
-		objects.push_back(new Cone());
+		objects.push_back(new Cone(vec3(0,0,0), vec3(0,1,0), 5, M_PI/4, material));
 	}
 
 	void render(std::vector<vec4>& image) { //virt. vil�g lef�nyk�pez�se
