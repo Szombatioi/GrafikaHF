@@ -1,6 +1,8 @@
 #include "framework.h"
 #include <algorithm>
-bool octa = false, cube = false, icosa = false;
+bool octa = false;
+bool cube = true;
+bool icosa = false;
 //TODO:
 //nyilatkozat
 //kommentek t�rl�se
@@ -145,24 +147,39 @@ public:
 	Hit intersect(const Ray& ray) {
 		Hit hit;
 		float cos_square = pow(cosf(angle), 2);
-		float a = pow(dot(ray.dir, n), 2) - dot(ray.dir, ray.dir) * cos_square; //TODO: lehet (dir*n)^2
-		float b = (dot(ray.dir, ray.start) - dot(ray.dir, p)) * (2 * dot(n, n) - 2 * cos_square);
-		float c = dot(n, n) * (dot(ray.start, ray.start) - dot(p,p) - 2*dot(ray.start, p)) - (dot(ray.start, ray.start) + dot(p,p) - 2*dot(ray.start, p))*cos_square;
+		//float a = pow(dot(ray.dir, n), 2) - dot(ray.dir, ray.dir) * cos_square; //TODO: lehet (dir*n)^2
+		//float b = (dot(ray.dir, ray.start) - dot(ray.dir, p)) * (2 * dot(n, n) - 2 * cos_square);
+		//float c = dot(n, n) * (dot(ray.start, ray.start) - dot(p,p) - 2*dot(ray.start, p)) - (dot(ray.start, ray.start) + dot(p,p) - 2*dot(ray.start, p))*cos_square;
+
+		vec3 co = ray.start - p;
+
+		float a = dot(ray.dir, n) * dot(ray.dir, n) - dot(ray.dir, ray.dir) * cos_square;
+		float b = 2. * (dot(ray.dir, n) * dot(co, n) - dot(ray.dir, co) * cos_square);
+		float c = dot(co, n) * dot(co, n) - dot(co, co) * cos_square;
 		
 		float discr = b * b - 4.0f * a * c;
 		if (discr < 0) return hit;
 		float sqrt_discr = sqrtf(discr);
 		float t1 = (-b + sqrt_discr) / 2.0f / a;	// t1 >= t2 for sure
 		float t2 = (-b - sqrt_discr) / 2.0f / a;
-		if (t1 <= 0) return hit;
+		if (t1 <= 0 && t2 <= 0) return hit;
 		//printf("?");
-		hit.t = (t2 > 0) ? t2 : t1;
+		hit.t = (t2 >= 0) ? t2 : t1;
 
-		//TODO: height kiszűrése
+		/*float t = t1;
+		if (t < 0. || t2 > 0. && t2 < t) t = t2;
+		if (t < 0.) return hit;*/
+
+		vec3 cp = ray.start + hit.t * ray.dir - p;
+		float h = dot(cp, n);
+		if (h < 0. || h > height) return Hit();
+
 		
 		vec3 point = ray.start + ray.dir * hit.t;
+		//hit.t = t;
 		hit.position = point;
-		hit.normal = normalize(2*((point - p) * n)*n - 2*(point - p)*cos_square);
+		//hit.normal = normalize(2*((point - p) * n)*n - 2*(point - p)*cos_square);
+		hit.normal = normalize(cp * dot(n, cp) / dot(cp,cp) - n);
 		hit.material = material;
 		return hit;
 	}
@@ -389,7 +406,9 @@ public:
 		/*vec3 kd2(1.0f, 0.3f, 0.3f);
 		Material* material2 = new Material(kd2, ks, 50);
 		objects.push_back(new Sphere(lightDirection, 0.1, material2));*/
-		objects.push_back(new Cone(vec3(0,0,0), vec3(0,1,0), 5, M_PI/4, material));
+		objects.push_back(new Cone(vec3(0,2,0), vec3(0,-1,0), 0.2, M_PI/8, material));
+		objects.push_back(new Cone(vec3(-1,1,0), vec3(1,0,0), 0.2, M_PI / 8, material));
+		objects.push_back(new Cone(vec3(0.67, 0.67, -0.03), vec3(0.25, 0.25, 0.25), 0.2, M_PI / 8, material));
 	}
 
 	void render(std::vector<vec4>& image) { //virt. vil�g lef�nyk�pez�se
