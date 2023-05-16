@@ -1,24 +1,26 @@
 ﻿  Skeleton.cpp
 C:\Users\olive\Desktop\Grafika HF\GrafikaHF\2. házi feladat\Project\Programs\Skeleton\Skeleton\framework.h(167,17): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-C:\Users\olive\Desktop\Grafika HF\GrafikaHF\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(15,13): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
+C:\Users\olive\Desktop\Grafika HF\GrafikaHF\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(16,13): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
 C:\Users\olive\Desktop\Grafika HF\GrafikaHF\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(23): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\olive\Desktop\Grafika HF\GrafikaHF\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(97,18): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\olive\Desktop\Grafika HF\GrafikaHF\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(97,1): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\olive\Desktop\Grafika HF\GrafikaHF\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(145,20): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\olive\Desktop\Grafika HF\GrafikaHF\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(153,11): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\olive\Desktop\Grafika HF\GrafikaHF\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(285,1): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\olive\Desktop\Grafika HF\GrafikaHF\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(286,1): warning C4305: 'initializing': truncation from 'double' to 'float'
-C:\Users\olive\Desktop\Grafika HF\GrafikaHF\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(290,1): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\olive\Desktop\Grafika HF\GrafikaHF\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(409,1): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\olive\Desktop\Grafika HF\GrafikaHF\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(413,1): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\olive\Desktop\Grafika HF\GrafikaHF\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(414,1): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\olive\Desktop\Grafika HF\GrafikaHF\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(415,1): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\olive\Desktop\Grafika HF\GrafikaHF\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(481,13): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\olive\Desktop\Grafika HF\GrafikaHF\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(505,72): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\olive\Desktop\Grafika HF\GrafikaHF\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(560,1): warning C4305: 'initializing': truncation from 'int' to 'float'
+C:\Users\olive\Desktop\Grafika HF\GrafikaHF\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(88,18): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\olive\Desktop\Grafika HF\GrafikaHF\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(88,1): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\olive\Desktop\Grafika HF\GrafikaHF\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(136,20): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\olive\Desktop\Grafika HF\GrafikaHF\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(144,11): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\olive\Desktop\Grafika HF\GrafikaHF\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(272,1): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\olive\Desktop\Grafika HF\GrafikaHF\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(273,1): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Users\olive\Desktop\Grafika HF\GrafikaHF\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(277,1): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\olive\Desktop\Grafika HF\GrafikaHF\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(282,1): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\olive\Desktop\Grafika HF\GrafikaHF\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(396,1): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\olive\Desktop\Grafika HF\GrafikaHF\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(400,1): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\olive\Desktop\Grafika HF\GrafikaHF\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(401,1): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\olive\Desktop\Grafika HF\GrafikaHF\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(402,1): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\olive\Desktop\Grafika HF\GrafikaHF\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(468,13): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\olive\Desktop\Grafika HF\GrafikaHF\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(499,1): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\olive\Desktop\Grafika HF\GrafikaHF\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(499,61): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\olive\Desktop\Grafika HF\GrafikaHF\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(552,1): warning C4305: 'initializing': truncation from 'int' to 'float'
   Generating code
-  2 of 558 functions ( 0.4%) were compiled, the rest were copied from previous compilation.
+  1 of 558 functions ( 0.2%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    2 functions had inline decision re-evaluated but remain unchanged
+    1 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
   Skeleton.vcxproj -> C:\Users\olive\Desktop\Grafika HF\GrafikaHF\2. házi feladat\Project\Programs\Skeleton\bin\Skeleton.exe

@@ -2,9 +2,10 @@
 #include <algorithm>
 
 const float epsilon = 0.0001f;
+const int maxdepth = 10;
 //TODO:
 //nyilatkozat
-//kommentek t�rl�se
+//kommentek torlese
 //forr�smegjel�l�sek
 //Cone
 //delete unnecessary classes
@@ -15,15 +16,13 @@ float dist_3D(vec3 p1, vec3 p2) {
 	return sqrt(dot(v,v));
 }
 
-
-//Szirmay-Kalos L�szl� munk�ss�ga alapj�n
 struct Material {
 	vec3 ka, kd, ks;
 	float shininess;
-	Material(vec3 _kd, vec3 _ks, float _shininess) : ka(_kd* M_PI), kd(_kd), ks(_ks) { shininess = _shininess; }
+	vec3 diffuseAlbedo;
+	Material(vec3 _kd, vec3 _ks, float _shininess, vec3 da) : diffuseAlbedo(da), ka(_kd* M_PI), kd(_kd), ks(_ks) { shininess = _shininess; }
 };
 
-//Szirmay-Kalos L�szl� munk�ss�ga alapj�n
 struct Hit {
 	float t;
 	vec3 position, normal;
@@ -31,13 +30,11 @@ struct Hit {
 	Hit() { t = -1; material = nullptr; }
 };
 
-//Szirmay-Kalos L�szl� munk�ss�ga alapj�n
 struct Ray {
 	vec3 start, dir;
 	Ray(vec3 _start, vec3 _dir) : start(_start), dir(_dir) {}
 };
 
-//Szirmay-Kalos L�szl� munk�ss�ga alapj�n
 class Intersectable {
 protected:
 	Material* material;
@@ -45,7 +42,6 @@ public:
 	virtual Hit intersect(const Ray& ray) = 0;
 };
 
-//Szirmay-Kalos L�szl� munk�ss�ga alapj�n
 class Camera {
 	vec3 eye, lookat, right, up;
 	float fov;
@@ -62,11 +58,6 @@ public:
 		vec3 dir = lookat + right * (2 * (X + 0.5f) / windowWidth - 1) + up * (2 * (Y + 0.5f) / windowHeight - 1) - eye;
 		return Ray(eye, dir);
 	}
-
-	/*void Animate(float dt) {
-		vec3 d = eye - lookat;
-		eye = vec3(d.x * cos(dt) + d.z )
-	}*/
 };
 
 struct DLight {
@@ -138,7 +129,7 @@ struct Cone : public Intersectable {
 	vec3 p, n;
 	float height, angle;
 	Material* material;
-//public:
+
 	Cone(vec3 _p, vec3 _n, float h, float a, Material* mat) : p(_p), n(normalize(_n)), material(mat) { height = h; angle = a;}
 	Hit intersect(const Ray& ray) {
 		Hit hit;
@@ -152,15 +143,11 @@ struct Cone : public Intersectable {
 		float a = dot(ray.dir, n) * dot(ray.dir, n) - dot(ray.dir, ray.dir) * cos_square;
 		float b = 2. * (dot(ray.dir, n) * dot(co, n) - dot(ray.dir, co) * cos_square);
 		float c = dot(co, n) * dot(co, n) - dot(co, co) * cos_square;
-
-		/*float a = dot(ray.dir, n) * dot(ray.dir, n) - dot(ray.dir, ray.dir)* cosf(angle) * cosf(angle);
-		float b = 2. * (dot(ray.dir, n) * dot(co, n) - dot(ray.dir, co) * cosf(angle) * cosf(angle));
-		float c = dot(co, n) * dot(co, n) - dot(co, co) * cosf(angle) * cosf(angle);*/
 		
 		float discr = b * b - 4.0f * a * c;
 		if (discr < 0) return hit;
 		float sqrt_discr = sqrtf(discr);
-		float t1 = (-b + sqrt_discr) / 2.0f / a;	// t1 >= t2 for sure
+		float t1 = (-b + sqrt_discr) / 2.0f / a;
 		float t2 = (-b - sqrt_discr) / 2.0f / a;
 		if (t1 <= 0 && t2 <= 0) return hit;
 		hit.t = (t2 >= 0) ? t2 : t1;
@@ -292,7 +279,7 @@ public:
 		lights.push_back(new DLight(lightDirection, Le));
 
 		vec3 kd1(0.3f, 0.3f, 0.3f), ks(1,1,1);
-		Material* material = new Material(kd1, ks, 75); //50 helyett 75
+		Material* material = new Material(kd1, ks, 75, vec3(0.6,0.6,0.6)); //50 helyett 75
 
 		
 
@@ -414,12 +401,12 @@ public:
 		Cone* c2 = new Cone(cone2_pos, cone2_dir, 0.2, M_PI / 8, material); //green
 		Cone* c3 = new Cone(cone3_pos, cone3_dir, 0.2, M_PI / 8, material); //blue
 
-		vec3 cone1Light_pos(cone1_pos);
-		vec3 cone1Light_pow(10,0,0);
-		vec3 cone2Light_pos(cone2_pos);
-		vec3 cone2Light_pow(0,10,0);
-		vec3 cone3Light_pos(cone3_pos);
-		vec3 cone3Light_pow(0,0,10);
+		vec3 cone1Light_pos(cone1_pos + cone1_dir*epsilon);
+		vec3 cone1Light_pow(0,0,0);
+		vec3 cone2Light_pos(cone2_pos + cone2_dir * epsilon);
+		vec3 cone2Light_pow(0,0,0);
+		vec3 cone3Light_pos(cone3_pos + cone3_dir * epsilon);
+		vec3 cone3Light_pow(0,0,100);
 		
 		PLight* p1 = new PLight(cone1Light_pos, cone1Light_pow);
 		PLight* p2 = new PLight(cone2Light_pos, cone2Light_pow);
@@ -494,22 +481,27 @@ public:
 			}
 		}
 
+
+		hit = firstIntersect(ray);	// Find visible surface
+		vec3 outRad(0, 0, 0);
+		if (hit.t < 0 || depth >= maxdepth) return outRad;
 		vec3 N = hit.normal;	// normal of the visible surface
 		vec3 outDir;
 		for (Bug *bug : bugs) {	// Direct light source computation
 			PLight *light = bug->light;
-			outDir = light->directionOf(hit.position);
+			outDir = light->directionOf(hit.position) * (-1);
 			Hit shadowHit = firstIntersect(Ray(hit.position + N * epsilon, outDir));
 			if (shadowHit.t < epsilon || shadowHit.t > light->distanceOf(hit.position)) {	// if not in shadow
 				double cosThetaL = dot(N, outDir);
-				outRadiance = outRadiance + /*hit.material->diffuseAlbedo / */M_PI * cosThetaL * light->radianceAt(hit.position);
-				//if (cosThetaL >= epsilon) {
+				//outRad = outRad+ /*hit.material->diffuseAlbedo / M_PI * cosThetaL * */light->radianceAt(hit.position);
+				if (cosThetaL >= epsilon) {
 					//outRadiance = outRadiance + /*hit.material->diffuseAlbedo / */M_PI * cosThetaL * light->radianceAt(hit.position);
-				//}
+					outRad = outRad + hit.material->diffuseAlbedo / M_PI * cosThetaL * light->radianceAt(hit.position);
+				}
 			}
 		}
 
-		return outRadiance;
+		return outRadiance + outRad;
 	}
 
 	//vec3 trace(Ray ray, int depth = 0) {
