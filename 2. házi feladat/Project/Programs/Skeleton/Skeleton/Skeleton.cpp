@@ -373,21 +373,14 @@ public:
 		};
 		objects.push_back(new Cube(cubePoints, cubePointIdx, material));
 
-		vec3 cone1_pos(0, 2, 0);
-		vec3 cone1_dir(0, -1, 0);
-		vec3 cone2_pos(-1,1, 0);
-		vec3 cone2_dir(1, 0, 0);
-		vec3 cone3_pos(0.67, 0.67, -0.03);
-		vec3 cone3_dir(0.25, 0.25, 0.25);
-
-		Cone* c1 = new Cone(cone1_pos, cone1_dir, 0.2, M_PI / 8, material); //red
-		Cone* c2 = new Cone(cone2_pos, cone2_dir, 0.2, M_PI / 8, material); //green
-		Cone* c3 = new Cone(cone3_pos, cone3_dir, 0.2, M_PI / 8, material); //blue
+		Cone* c1 = new Cone(vec3(0, 2, 0), vec3(0, -1, 0), 0.2, M_PI / 8, material); //red
+		Cone* c2 = new Cone(vec3(-1, 1, 0), vec3(1,0,0), 0.2, M_PI / 8, material); //green
+		Cone* c3 = new Cone(vec3(0.67, 0.67, -0.03), vec3(0.25, 0.25, 0.25), 0.2, M_PI / 8, material); //blue
 
 		float delta = 0.01;
-		PLight* p1 = new PLight(cone1_pos + cone1_dir * delta, vec3(50,0,0));
-		PLight* p2 = new PLight(cone2_pos + cone2_dir * delta, vec3(0,50,0));
-		PLight* p3 = new PLight(cone3_pos + cone3_dir * delta, vec3(0,0,50));
+		PLight* p1 = new PLight(c1->p + c1->n * delta, vec3(50,0,0));
+		PLight* p2 = new PLight(c2->p + c2->n * delta, vec3(0,50,0));
+		PLight* p3 = new PLight(c3->p + c3->n * delta, vec3(0,0,50));
 		coneLights.push_back(p1);
 		coneLights.push_back(p2);
 		coneLights.push_back(p3);
@@ -442,17 +435,14 @@ public:
 		vec3 outRadiance = hit.material->ka * La;
 
 		for (DLight* light : lights) {
-			//Ray shadowRay(hit.position + hit.normal * epsilon, light->direction);
+			Ray shadowRay(hit.position + hit.normal * epsilon, light->direction);
 			float cosTheta = dot(hit.normal, light->direction);
-			if (cosTheta > 0 /* && !shadowIntersect(shadowRay) */ ) {	// shadow computation
+			if (cosTheta > 0  && !shadowIntersect(shadowRay)  ) {	// shadow computation
 				outRadiance = outRadiance + light->Le * hit.material->kd * cosTheta;
 				vec3 halfway = normalize(-ray.dir + light->direction);
 				float cosDelta = dot(hit.normal, halfway);
 				if (cosDelta > 0) outRadiance = outRadiance + light->Le * hit.material->ks * powf(cosDelta, hit.material->shininess);
 			}
-
-
-
 		}
 
 		vec3 outRad(0, 0, 0);
@@ -462,7 +452,7 @@ public:
 		for (Bug *bug : bugs) {
 			PLight *light = bug->light;
 			outDir = light->directionOf(hit.position);
-			//if (dot(outDir, bug->cone->n) <= 0) {
+			if (dot(outDir, bug->cone->n) < cosf(bug->cone->angle)) {
 				Hit shadowHit = firstIntersect(Ray(hit.position + N * epsilon, outDir));
 				if (shadowHit.t < epsilon || shadowHit.t > light->distanceOf(hit.position)) {	// if not in shadow
 					double cosThetaL = dot(N, outDir);
@@ -470,7 +460,7 @@ public:
 						outRad = outRad + hit.material->diffuseAlbedo / M_PI * cosThetaL * light->radianceAt(hit.position);
 					}
 				}
-			//}
+			}
 		}
 
 		return outRadiance + outRad;
