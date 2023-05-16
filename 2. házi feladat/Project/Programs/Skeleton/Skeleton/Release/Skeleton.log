@@ -6,22 +6,24 @@ C:\Users\olive\Desktop\Grafika HF\GrafikaHF\2. házi feladat\Project\Programs\Sk
 C:\Users\olive\Desktop\Grafika HF\GrafikaHF\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(136,20): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
 C:\Users\olive\Desktop\Grafika HF\GrafikaHF\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(144,11): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
 C:\Users\olive\Desktop\Grafika HF\GrafikaHF\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(178,1): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\olive\Desktop\Grafika HF\GrafikaHF\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(277,1): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\olive\Desktop\Grafika HF\GrafikaHF\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(278,1): warning C4305: 'initializing': truncation from 'double' to 'float'
-C:\Users\olive\Desktop\Grafika HF\GrafikaHF\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(282,1): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\olive\Desktop\Grafika HF\GrafikaHF\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(401,1): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\olive\Desktop\Grafika HF\GrafikaHF\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(405,1): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\olive\Desktop\Grafika HF\GrafikaHF\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(406,1): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\olive\Desktop\Grafika HF\GrafikaHF\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(407,1): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\olive\Desktop\Grafika HF\GrafikaHF\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(409,1): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\olive\Desktop\Grafika HF\GrafikaHF\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(411,1): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\olive\Desktop\Grafika HF\GrafikaHF\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(413,1): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\olive\Desktop\Grafika HF\GrafikaHF\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(475,13): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\olive\Desktop\Grafika HF\GrafikaHF\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(505,65): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\olive\Desktop\Grafika HF\GrafikaHF\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(521,1): warning C4305: 'initializing': truncation from 'int' to 'float'
+C:\Users\olive\Desktop\Grafika HF\GrafikaHF\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(221,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\olive\Desktop\Grafika HF\GrafikaHF\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(251,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\olive\Desktop\Grafika HF\GrafikaHF\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(273,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\olive\Desktop\Grafika HF\GrafikaHF\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(299,1): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\olive\Desktop\Grafika HF\GrafikaHF\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(300,1): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Users\olive\Desktop\Grafika HF\GrafikaHF\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(304,1): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\olive\Desktop\Grafika HF\GrafikaHF\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(380,1): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\olive\Desktop\Grafika HF\GrafikaHF\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(383,1): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\olive\Desktop\Grafika HF\GrafikaHF\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(384,1): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\olive\Desktop\Grafika HF\GrafikaHF\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(385,1): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\olive\Desktop\Grafika HF\GrafikaHF\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(387,1): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Users\olive\Desktop\Grafika HF\GrafikaHF\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(439,13): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\olive\Desktop\Grafika HF\GrafikaHF\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(470,1): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\olive\Desktop\Grafika HF\GrafikaHF\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(470,62): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\olive\Desktop\Grafika HF\GrafikaHF\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(487,1): warning C4305: 'initializing': truncation from 'int' to 'float'
   Generating code
-  2 of 558 functions ( 0.4%) were compiled, the rest were copied from previous compilation.
+  1 of 581 functions ( 0.2%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    11 functions had inline decision re-evaluated but remain unchanged
+    1 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
   Skeleton.vcxproj -> C:\Users\olive\Desktop\Grafika HF\GrafikaHF\2. házi feladat\Project\Programs\Skeleton\bin\Skeleton.exe

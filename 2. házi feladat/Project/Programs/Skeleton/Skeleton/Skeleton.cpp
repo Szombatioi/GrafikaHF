@@ -182,12 +182,17 @@ struct Bug {
 class Square : public Intersectable {
 	std::vector<Triangle> triangles; //2
 public:
-	Square(std::vector<Triangle> t) {
+	/*Square(std::vector<vec3> points, std::vector<int> panes, Material* _material) {
+		
+	}*/
+	
+	//TODO: delete
+	/*Square(std::vector<Triangle> t) {
 		triangles = std::vector<Triangle>();
 		triangles.push_back(t[0]);
 		triangles.push_back(t[1]);
 
-	}
+	}*/
 
 	Square(vec3 A, vec3 B, vec3 C, vec3 D, Material* mat) {
 		triangles = std::vector<Triangle>();
@@ -211,6 +216,13 @@ class Cube : public Intersectable {
 	std::vector<Square> sides;
 public:
 	
+	Cube(std::vector<vec3> points, std::vector<int> panes, Material *material) {
+		sides = std::vector<Square>();
+		for (int i = 0; i < panes.size(); i += 4) {
+			sides.push_back(Square(points[panes[i]], points[panes[i + 1]], points[panes[i + 2]], points[panes[i+3]], material));
+		}
+	}
+
 	Cube(std::vector<Square> s) {
 		sides = s;
 	}
@@ -234,6 +246,12 @@ public:
 class Icosahedron : public Intersectable {
 	std::vector<Square> sides;
 public:
+	Icosahedron(std::vector<vec3> points, std::vector<int> panes, Material* material) {
+		sides = std::vector<Square>();
+		for (int i = 0; i < panes.size(); i += 4) {
+			sides.push_back(Square(points[panes[i]], points[panes[i + 1]], points[panes[i + 2]], points[panes[i+3]], material));
+		}
+	}
 	Icosahedron(std::vector<Square> s) {
 		sides = s;
 	}
@@ -250,6 +268,12 @@ public:
 class Octahedron : public Intersectable {
 	std::vector<Square> sides;
 public:
+	Octahedron(std::vector<vec3> points, std::vector<int> panes, Material* material) {
+		sides = std::vector<Square>();
+		for (int i = 0; i < panes.size(); i += 4) {
+			sides.push_back(Square(points[panes[i]], points[panes[i + 1]], points[panes[i + 2]], points[panes[i + 3]], material));
+		}
+	}
 	Octahedron(std::vector<Square> s) {
 		sides = s;
 	}
@@ -267,108 +291,69 @@ class Scene {
 	std::vector<Intersectable*> objects;
 	std::vector<DLight*> lights;
 	std::vector<PLight*> coneLights;
-	//std::vector<Cone*> cones;
 	std::vector<Bug*> bugs;
 	Camera camera;
 	vec3 La;
 public:
 	void build() {
-		//vec3 eye = vec3(-4,1.5,4), vup = vec3(0, 1, 0), lookat = vec3(0,0,0); //tests
 		vec3 eye = vec3(2.5f, 1.5f, 2.5f), vup = vec3(0, 1, 0), lookat = vec3(0,0.8,0);
 		float fov = 45 * M_PI / 180;
 		camera.set(eye, lookat, vup, fov);
 
 		La = vec3(0.0f, 0.0f, 0.0f);
 		vec3 lightDirection(0.1,0.1,0.1), Le(1.5f, 1.5f, 1.5f);
-		//vec3 lightDirection(2,0.5,3), Le(1.5f, 1.5f, 1.5f);
 		lights.push_back(new DLight(lightDirection, Le));
 
 		vec3 kd1(0.3f, 0.3f, 0.3f), ks(1,1,1);
-		Material* material = new Material(kd1, ks, 75, vec3(1.0,1.0,1.0)); //50 helyett 75
+		Material* material = new Material(kd1, ks, 75, vec3(1,1,1)); //50 helyett 75
 
-		
+		vec3 A, B, C, D, E, F, G, H, I, J, K, L;
 
-		vec3 A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T;
-		std::vector<Square> sides;
-		std::vector<Triangle> triangles;
+		A = vec3(-0.25f, 0.925f, 0.235f),
+		B = vec3(0.175f, 0.765f, 0.5f),
+		C = vec3(0.175f, 0.235f, 0.5f),
+		D = vec3(-0.675f, 0.235f, 0.5f),
+		E = vec3(-0.675f, 0.765f, 0.5f),
+		F = vec3(-0.515f, 0.5f, 0.925f),
+		G = vec3(0.015f, 0.5f, 0.925f),
+		H = vec3(0.015f, 0.5f, 0.075f),
+		I = vec3(-0.515f, 0.5f, 0.075f),
+		J = vec3(-0.25f, 0.075f , 0.235f),
+		K = vec3(-0.25f, 0.075f, 0.765f),
+		L = vec3(-0.25f, 0.925f, 0.765f);		
 
-		A = vec3(0.0f, 0.425f, -0.265f),
-		B = vec3(0.425f, 0.265f, 0.0f),
-		C = vec3(0.425f, -0.265f, 0.0f),
-		D = vec3(-0.425f, -0.265f, 0.0f),
-		E = vec3(-0.425f, 0.265f, 0.0f),
-		F = vec3(-0.265f, 0.0f, 0.425f),
-		G = vec3(0.265f, 0.0f, 0.425f),
-		H = vec3(0.265f, 0.0f, -0.425f),
-		I = vec3(-0.265f, 0.0f, -0.425f),
-		J = vec3(0.0f, -0.425f , -0.265f),
-		K = vec3(0.0f, -0.425f, 0.265f),
-		L = vec3(0.0f, 0.425f, 0.265f);
-
-		float v = 0.5;
-		A.y += v;  A.z += v;  A.x -= v / 2;
-		B.y += v;  B.z += v;  B.x -= v / 2;
-		C.y += v;  C.z += v;  C.x -= v / 2;
-		D.y += v;  D.z += v;  D.x -= v / 2;
-		E.y += v;  E.z += v;  E.x -= v / 2;
-		F.y += v;  F.z += v;  F.x -= v / 2;
-		G.y += v;  G.z += v;  G.x -= v / 2;
-		H.y += v;  H.z += v;  H.x -= v / 2;
-		I.y += v;  I.z += v;  I.x -= v / 2;
-		J.y += v;  J.z += v;  J.x -= v / 2;
-		K.y += v;  K.z += v;  K.x -= v / 2;
-		L.y += v;  L.z += v;  L.x -= v / 2;
-
-		sides = std::vector<Square>();
-		sides.push_back(Square(G,B,C,H, material));
-		sides.push_back(Square(B, L, G, F, material));
-		sides.push_back(Square(L,A,B,H, material));
-		sides.push_back(Square(C, G, K, F, material));
-		sides.push_back(Square(K,C,J,H, material));
-		sides.push_back(Square(A,I,H,J, material));
-		sides.push_back(Square(A,I,F,D, material));
-		sides.push_back(Square(I,J,D,K, material));
-		sides.push_back(Square(A,L,E,F, material));
-		sides.push_back(Square(E,F,D,K, material));
-		
-		objects.push_back(new Icosahedron(sides));
-
+		std::vector<vec3> icosaPoints = { A,B,C,D,E,F,G,H,I,J,K,L };
+		std::vector<int> icosaPointsIdx = {
+			6,1,2,7,
+			1,11,6,5,
+			11,0,1,7,
+			2,6,10,5,
+			10,2,9,7,
+			0,8,7,9,
+			0,8,5,3,
+			8,9,3,10,
+			0,11,4,5,
+			4,5,3,10
+		};
+		objects.push_back(new Icosahedron(icosaPoints, icosaPointsIdx, material));
 		
 		//Octahedron - squares
-		A = vec3(0.5, 0.5, 0),
-		B = vec3(0, 0, 0),	
-		C = vec3(-0.5, 0.5, 0),
-		D = vec3(0, 1, 0),	
-		E = vec3(0, 0.5, 0.5),
-		F = vec3(0, 0.5, -0.5);
+		A = vec3(1.0f, 0.5f, -0.2f),
+		B = vec3(0.5f, 0.0f, -0.2f),
+		C = vec3(0.0f, 0.5f, -0.2f),
+		D = vec3(0.5f, 1.0f, -0.2f),
+		E = vec3(0.5f, 0.5f, 0.3f),	
+		F = vec3(0.5f, 0.5f, -0.8f);
 
+		std::vector<vec3> octaPoints = {A,B,C,D,E,F};
+		std::vector<int> octaPointsIdx = {
+			0,1,4,2,
+			2,3,4,0,
+			0,1,5,2,
+			2,3,5,0
+		};
+		objects.push_back(new Octahedron(octaPoints, octaPointsIdx, material));
 
-		//TEST: eltolás
-		float val = 0.5f;
-		A.x += val;
-		B.x += val;
-		C.x += val;
-		D.x += val;
-		E.x += val;
-		F.x += val;
-
-		val = -0.2f;
-		A.z += val;
-		B.z += val;
-		C.z += val;
-		D.z += val;
-		E.z += val;
-		F.z += val;
-
-		sides = std::vector<Square>();
-		sides.push_back(Square(A,B,E,C, material));
-		sides.push_back(Square(C,D,E,A, material));
-		sides.push_back(Square(A,B,F,C, material));
-		sides.push_back(Square(C,D,F,A, material));
-		objects.push_back(new Octahedron(sides));
-
-
-		//Y és Z felcserélve
 		A = vec3(-1.0, 0.0, -1.0),
 		B = vec3(-1.0, 2.0, -1.0),
 		C = vec3(-1.0, 0.0, 1.0),
@@ -377,63 +362,42 @@ public:
 		F = vec3(1.0, 2.0, -1.0),
 		G = vec3(1.0, 0.0, 1.0),
 		H = vec3(1.0, 2.0, 1.0);
-
-		
-		sides.push_back(Square(E, G, A, C, material)); //padló
-		sides.push_back(Square(C, D, A, B, material)); //bal hátsó oldal
-		sides.push_back(Square(E, F, A, B, material)); //jobb hátsó
-		sides.push_back(Square(F, H, B, D, material)); //tető
-		sides.push_back(Square(G,H,E,F, material)); //jobb első oldal
-		sides.push_back(Square(G,H,C,D, material)); //bal első oldal
-		objects.push_back(new Cube(sides));
-
-
-		/*vec3 kd2(1.0f, 0.3f, 0.3f);
-		Material* material2 = new Material(kd2, ks, 50);
-		objects.push_back(new Sphere(lightDirection, 0.1, material2));*/
+		std::vector<vec3> cubePoints = { A,B,C,D,E,F,G,H };
+		std::vector<int> cubePointIdx = {
+			4,6,0,2, //padló
+			2,3,0,1, //bal hátsó oldal
+			4,5,0,1, //jobb hátsó oldal
+			5,7,1,3, //tető
+			6,7,4,5, //jobb első oldal
+			6,7,2,3 //bal első oldal
+		};
+		objects.push_back(new Cube(cubePoints, cubePointIdx, material));
 
 		vec3 cone1_pos(0, 2, 0);
 		vec3 cone1_dir(0, -1, 0);
-
 		vec3 cone2_pos(-1,1, 0);
 		vec3 cone2_dir(1, 0, 0);
-
 		vec3 cone3_pos(0.67, 0.67, -0.03);
 		vec3 cone3_dir(0.25, 0.25, 0.25);
-
 
 		Cone* c1 = new Cone(cone1_pos, cone1_dir, 0.2, M_PI / 8, material); //red
 		Cone* c2 = new Cone(cone2_pos, cone2_dir, 0.2, M_PI / 8, material); //green
 		Cone* c3 = new Cone(cone3_pos, cone3_dir, 0.2, M_PI / 8, material); //blue
 
-		vec3 cone1Light_pos(cone1_pos + cone1_dir * 0.05);
-		vec3 cone1Light_pow(50,0,0);
-		vec3 cone2Light_pos(cone2_pos + cone2_dir * 0.05);
-		vec3 cone2Light_pow(0,50,0);
-		vec3 cone3Light_pos(cone3_pos + cone3_dir * 0.05);
-		vec3 cone3Light_pow(0,0,50);
-		
-		PLight* p1 = new PLight(cone1Light_pos, cone1Light_pow);
-		PLight* p2 = new PLight(cone2Light_pos, cone2Light_pow);
-		PLight* p3 = new PLight(cone3Light_pos, cone3Light_pow);
-
+		float delta = 0.01;
+		PLight* p1 = new PLight(cone1_pos + cone1_dir * delta, vec3(50,0,0));
+		PLight* p2 = new PLight(cone2_pos + cone2_dir * delta, vec3(0,50,0));
+		PLight* p3 = new PLight(cone3_pos + cone3_dir * delta, vec3(0,0,50));
 		coneLights.push_back(p1);
 		coneLights.push_back(p2);
 		coneLights.push_back(p3);
 
 		objects.push_back(c1);
-		//cones.push_back(c1);
-		bugs.push_back(new Bug(c1, p1));
-		
 		objects.push_back(c2);
-		//cones.push_back(c2);
-		bugs.push_back(new Bug(c2, p2));
-
 		objects.push_back(c3);
-		//cones.push_back(c3);
+		bugs.push_back(new Bug(c1, p1));
+		bugs.push_back(new Bug(c2, p2));
 		bugs.push_back(new Bug(c3, p3));
-
-
 	}
 
 	void render(std::vector<vec4>& image) { //virt. vil�g lef�nyk�pez�se
@@ -498,13 +462,15 @@ public:
 		for (Bug *bug : bugs) {
 			PLight *light = bug->light;
 			outDir = light->directionOf(hit.position);
-			Hit shadowHit = firstIntersect(Ray(hit.position + N * epsilon, outDir));
-			if (shadowHit.t < epsilon || shadowHit.t > light->distanceOf(hit.position)) {	// if not in shadow
-				double cosThetaL = dot(N, outDir);
-				if (cosThetaL >= epsilon) {
-					outRad = outRad + hit.material->diffuseAlbedo / M_PI * cosThetaL * light->radianceAt(hit.position);
+			//if (dot(outDir, bug->cone->n) <= 0) {
+				Hit shadowHit = firstIntersect(Ray(hit.position + N * epsilon, outDir));
+				if (shadowHit.t < epsilon || shadowHit.t > light->distanceOf(hit.position)) {	// if not in shadow
+					double cosThetaL = dot(N, outDir);
+					if (cosThetaL >= epsilon) {
+						outRad = outRad + hit.material->diffuseAlbedo / M_PI * cosThetaL * light->radianceAt(hit.position);
+					}
 				}
-			}
+			//}
 		}
 
 		return outRadiance + outRad;
