@@ -2,9 +2,6 @@
 #include <algorithm>
 
 const float epsilon = 0.0001f;
-bool octa = true;
-bool cube = true;
-bool icosa = true;
 //TODO:
 //nyilatkozat
 //kommentek t�rl�se
@@ -264,24 +261,6 @@ public:
 	}
 };
 
-/*class Dodecahedron : public Intersectable {
-	std::vector<Triangle> triangles;
-	std::vector<Square> sides;
-public:
-	Dodecahedron(std::vector<Triangle> t) {
-		triangles = t;
-	}
-
-	Hit intersect(const Ray& ray) {
-		Hit bestHit;
-		for (Triangle t : triangles) {
-			Hit hit = t.intersect(ray);
-			if (hit.t > 0 && (bestHit.t < 0 || bestHit.t > hit.t)) bestHit = hit;
-		}
-		return bestHit;
-	}
-};*/
-
 class Scene {
 	std::vector<Intersectable*> objects;
 	std::vector<DLight*> lights;
@@ -301,7 +280,7 @@ public:
 		lights.push_back(new DLight(lightDirection, Le));
 
 		vec3 kd1(0.3f, 0.3f, 0.3f), ks(1,1,1);
-		Material* material = new Material(kd1, ks, 50);
+		Material* material = new Material(kd1, ks, 75); //50 helyett 75
 
 		vec3 A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T;
 		std::vector<Square> sides;
@@ -346,7 +325,7 @@ public:
 		sides.push_back(Square(A,L,E,F, material));
 		sides.push_back(Square(E,F,D,K, material));
 		
-		if(icosa) objects.push_back(new Icosahedron(sides));
+		objects.push_back(new Icosahedron(sides));
 
 		
 		//Octahedron - squares
@@ -380,7 +359,7 @@ public:
 		sides.push_back(Square(C,D,E,A, material));
 		sides.push_back(Square(A,B,F,C, material));
 		sides.push_back(Square(C,D,F,A, material));
-		if(octa) objects.push_back(new Octahedron(sides));
+		objects.push_back(new Octahedron(sides));
 
 
 		//Y és Z felcserélve
@@ -400,7 +379,7 @@ public:
 		sides.push_back(Square(F, H, B, D, material)); //tető
 		//sides.push_back(Square(G,H,E,F, material)); //jobb első oldal
 		//sides.push_back(Square(G,H,C,D, material)); //bal első oldal
-		if(cube) objects.push_back(new Cube(sides));
+		objects.push_back(new Cube(sides));
 
 
 		/*vec3 kd2(1.0f, 0.3f, 0.3f);
@@ -466,25 +445,25 @@ public:
 	}
 
 	//TODO: yet wrong
-	Hit secondIntersect(Ray ray) {
-		Hit bestHit, secondHit;
-		
-		for (Intersectable* obj : objects) {
-			Hit hit = obj->intersect(ray);
-			if (hit.t > 0 && (bestHit.t < 0 || bestHit.t > hit.t))  bestHit = hit;
-		}
-		
-		for (Intersectable* obj : objects) {
-			Hit hit = obj->intersect(ray);
-			if (hit.t > 0 && (secondHit.t < 0 || secondHit.t == bestHit.t)) {
-				secondHit = hit;
-			}
-		}
-		//if (dot(ray.dir, bestHit.normal) > 0) bestHit.normal = bestHit.normal * (-1);
-		if (dot(ray.dir, secondHit.normal) > 0) secondHit.normal = secondHit.normal * (-1);
-		return secondHit;
+	//Hit secondIntersect(Ray ray) {
+	//	Hit bestHit, secondHit;
+	//	
+	//	for (Intersectable* obj : objects) {
+	//		Hit hit = obj->intersect(ray);
+	//		if (hit.t > 0 && (bestHit.t < 0 || bestHit.t > hit.t))  bestHit = hit;
+	//	}
+	//	
+	//	for (Intersectable* obj : objects) {
+	//		Hit hit = obj->intersect(ray);
+	//		if (hit.t > 0 && (secondHit.t < 0 || secondHit.t == bestHit.t)) {
+	//			secondHit = hit;
+	//		}
+	//	}
+	//	//if (dot(ray.dir, bestHit.normal) > 0) bestHit.normal = bestHit.normal * (-1);
+	//	if (dot(ray.dir, secondHit.normal) > 0) secondHit.normal = secondHit.normal * (-1);
+	//	return secondHit;
 
-	}
+	//}
 
 
 
@@ -555,9 +534,9 @@ public:
 		//}
 
 		for (DLight* light : lights) {
-			Ray shadowRay(hit.position + hit.normal * epsilon, light->direction);
+			//Ray shadowRay(hit.position + hit.normal * epsilon, light->direction);
 			float cosTheta = dot(hit.normal, light->direction);
-			if (cosTheta > 0 && !shadowIntersect(shadowRay)) {	// shadow computation
+			if (cosTheta > 0 /* && !shadowIntersect(shadowRay) */ ) {	// shadow computation
 				outRadiance = outRadiance + light->Le * hit.material->kd * cosTheta;
 				vec3 halfway = normalize(-ray.dir + light->direction);
 				float cosDelta = dot(hit.normal, halfway);
