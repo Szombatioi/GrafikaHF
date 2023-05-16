@@ -2,6 +2,7 @@
 #include <algorithm>
 
 const float epsilon = 0.0001f;
+//const float epsilon = 0.0001f;
 const int maxdepth = 10;
 //TODO:
 //nyilatkozat
@@ -150,7 +151,10 @@ struct Cone : public Intersectable {
 		float t1 = (-b + sqrt_discr) / 2.0f / a;
 		float t2 = (-b - sqrt_discr) / 2.0f / a;
 		if (t1 <= 0 && t2 <= 0) return hit;
-		hit.t = (t2 >= 0) ? t2 : t1;
+		hit.t = (t2>=0) ? t2 : t1;
+		/*hit.t = t1;
+		if (hit.t < 0 || t2>0. && t2 < hit.t) hit.t = t2;
+		if (hit.t < 0) return Hit();*/
 
 		vec3 cp = ray.start + hit.t * ray.dir - p;
 		float h = dot(cp, n);
@@ -159,8 +163,8 @@ struct Cone : public Intersectable {
 		
 		vec3 point = ray.start + ray.dir * hit.t;
 		hit.position = point;
-		//hit.normal = normalize(2*((point - p) * n)*n - 2*(point - p)*cos_square);
-		hit.normal = normalize(cp * dot(n, cp) / dot(cp,cp) - n);
+		hit.normal = normalize(2*dot((point - p),n)*n - 2*(point - p)*cos_square);
+		//hit.normal = normalize(cp * dot(n, cp) / dot(cp,cp) - n);
 		hit.material = material;
 		return hit;
 	}
@@ -378,9 +382,9 @@ public:
 		Cone* c3 = new Cone(vec3(0.67, 0.67, -0.03), vec3(0.25, 0.25, 0.25), 0.2, M_PI / 8, material); //blue
 
 		float delta = 0.01;
-		PLight* p1 = new PLight(c1->p + c1->n * delta, vec3(50,0,0));
-		PLight* p2 = new PLight(c2->p + c2->n * delta, vec3(0,50,0));
-		PLight* p3 = new PLight(c3->p + c3->n * delta, vec3(0,0,50));
+		PLight* p1 = new PLight(c1->p + c1->n * delta, vec3(0,0,0));
+		PLight* p2 = new PLight(c2->p + c2->n * delta, vec3(0,0,0));
+		PLight* p3 = new PLight(c3->p + c3->n * delta, vec3(0,0,0));
 		coneLights.push_back(p1);
 		coneLights.push_back(p2);
 		coneLights.push_back(p3);
@@ -432,6 +436,7 @@ public:
 		float val = 0.2 * (1 + dot(normalize(hit.normal), normalize(ray.dir)));
 		La = vec3(val,val,val);
 		if (hit.t < 0) return vec3(0.0, 0.0, 0.0);
+		//return hit.normal;
 		vec3 outRadiance = hit.material->ka * La;
 
 		for (DLight* light : lights) {
@@ -451,16 +456,16 @@ public:
 		vec3 outDir;
 		for (Bug *bug : bugs) {
 			PLight *light = bug->light;
-			outDir = light->directionOf(hit.position);
-			if (dot(outDir, bug->cone->n) < cosf(bug->cone->angle)) {
+			outDir = light->directionOf(hit.position + epsilon);
+			//if (dot(outDir, bug->cone->n) < cosf(bug->cone->angle)) {
 				Hit shadowHit = firstIntersect(Ray(hit.position + N * epsilon, outDir));
-				if (shadowHit.t < epsilon || shadowHit.t > light->distanceOf(hit.position)) {	// if not in shadow
+				if (shadowHit.t < epsilon || shadowHit.t > light->distanceOf(hit.position + epsilon)) {	// if not in shadow
 					double cosThetaL = dot(N, outDir);
-					if (cosThetaL >= epsilon) {
-						outRad = outRad + hit.material->diffuseAlbedo / M_PI * cosThetaL * light->radianceAt(hit.position);
-					}
+					//if (cosThetaL >= epsilon) {
+						outRad = outRad + hit.material->diffuseAlbedo / M_PI * cosThetaL * light->radianceAt(hit.position + epsilon);
+					//}
 				}
-			}
+			//}
 		}
 
 		return outRadiance + outRad;

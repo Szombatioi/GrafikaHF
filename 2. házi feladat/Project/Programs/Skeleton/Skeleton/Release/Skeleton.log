@@ -1,28 +1,28 @@
 ﻿  Skeleton.cpp
 C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\2. házi feladat\Project\Programs\Skeleton\Skeleton\framework.h(167,17): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(16,13): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
-C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(23): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(88,33): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(136,20): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(144,11): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(178,1): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(221,21): warning C4018: '<': signed/unsigned mismatch
-C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(251,21): warning C4018: '<': signed/unsigned mismatch
-C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(273,21): warning C4018: '<': signed/unsigned mismatch
-C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(299,1): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(300,1): warning C4305: 'initializing': truncation from 'double' to 'float'
-C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(304,1): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(376,1): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(377,1): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(378,1): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(380,1): warning C4305: 'initializing': truncation from 'double' to 'float'
-C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(432,13): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(460,1): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(460,62): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(477,1): warning C4305: 'initializing': truncation from 'int' to 'float'
+C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(17,13): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
+C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(24): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(89,33): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(137,20): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(145,11): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(182,1): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(225,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(255,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(277,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(303,1): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(304,1): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(308,1): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(380,1): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(381,1): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(382,1): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(384,1): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(436,13): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(465,1): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(465,62): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\2. házi feladat\Project\Programs\Skeleton\Skeleton\Skeleton.cpp(482,1): warning C4305: 'initializing': truncation from 'int' to 'float'
   Generating code
-  3 of 582 functions ( 0.5%) were compiled, the rest were copied from previous compilation.
+  1 of 582 functions ( 0.2%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    2 functions had inline decision re-evaluated but remain unchanged
+    7 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
   Skeleton.vcxproj -> C:\Users\Szombati Olivér\Documents\Grafika cpp\Házi feladatok\2. házi feladat\Project\Programs\Skeleton\bin\Skeleton.exe
