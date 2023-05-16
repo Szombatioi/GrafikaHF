@@ -85,7 +85,7 @@ struct PLight {
 	vec3 radianceAt(vec3 point) {
 		double distance2 = dot(location - point, location - point);
 		if (distance2 < epsilon) distance2 = epsilon;
-		return power / distance2 / 4 / M_PI;
+		return power / (distance2 * 8 * M_PI);
 	}
 };
 
@@ -154,7 +154,7 @@ struct Cone : public Intersectable {
 
 		vec3 cp = ray.start + hit.t * ray.dir - p;
 		float h = dot(cp, n);
-		if (h < 0. || h > height) return Hit();
+		if (h <= 0.0 || h >= height) return Hit();
 
 		
 		vec3 point = ray.start + ray.dir * hit.t;
@@ -173,8 +173,9 @@ struct Bug {
 	Bug(Cone* c, PLight* l) : cone(c), light(l) {}
 	void Move(vec3 to, vec3 normal) {
 		cone->p = to;
-		cone->n = normal;
-		light->location;
+		cone->n = normalize(normal);
+
+		light->location = to + cone->n * 0.05;
 	}
 };
 
@@ -215,12 +216,16 @@ public:
 	}
 
 	Hit intersect(const Ray& ray) {
-		Hit bestHit;
+		Hit bestHit, secondBestHit;
 		for (Square s : sides) {
 			Hit hit = s.intersect(ray);
-			if (hit.t > 0 && (bestHit.t < 0 || bestHit.t > hit.t)) bestHit = hit;
+			if (hit.t > 0 && (bestHit.t < 0 || bestHit.t > hit.t)) {
+				secondBestHit = bestHit;
+				bestHit = hit;
+			}
 		}
-		return bestHit;
+		return secondBestHit;
+		//return bestHit;
 	}
 };
 
@@ -279,7 +284,7 @@ public:
 		lights.push_back(new DLight(lightDirection, Le));
 
 		vec3 kd1(0.3f, 0.3f, 0.3f), ks(1,1,1);
-		Material* material = new Material(kd1, ks, 75, vec3(0.6,0.6,0.6)); //50 helyett 75
+		Material* material = new Material(kd1, ks, 75, vec3(1.0,1.0,1.0)); //50 helyett 75
 
 		
 
@@ -378,8 +383,8 @@ public:
 		sides.push_back(Square(C, D, A, B, material)); //bal hátsó oldal
 		sides.push_back(Square(E, F, A, B, material)); //jobb hátsó
 		sides.push_back(Square(F, H, B, D, material)); //tető
-		//sides.push_back(Square(G,H,E,F, material)); //jobb első oldal
-		//sides.push_back(Square(G,H,C,D, material)); //bal első oldal
+		sides.push_back(Square(G,H,E,F, material)); //jobb első oldal
+		sides.push_back(Square(G,H,C,D, material)); //bal első oldal
 		objects.push_back(new Cube(sides));
 
 
@@ -401,12 +406,12 @@ public:
 		Cone* c2 = new Cone(cone2_pos, cone2_dir, 0.2, M_PI / 8, material); //green
 		Cone* c3 = new Cone(cone3_pos, cone3_dir, 0.2, M_PI / 8, material); //blue
 
-		vec3 cone1Light_pos(cone1_pos + cone1_dir*epsilon);
-		vec3 cone1Light_pow(0,0,0);
-		vec3 cone2Light_pos(cone2_pos + cone2_dir * epsilon);
-		vec3 cone2Light_pow(0,0,0);
-		vec3 cone3Light_pos(cone3_pos + cone3_dir * epsilon);
-		vec3 cone3Light_pow(0,0,100);
+		vec3 cone1Light_pos(cone1_pos + cone1_dir * 0.05);
+		vec3 cone1Light_pow(50,0,0);
+		vec3 cone2Light_pos(cone2_pos + cone2_dir * 0.05);
+		vec3 cone2Light_pow(0,50,0);
+		vec3 cone3Light_pos(cone3_pos + cone3_dir * 0.05);
+		vec3 cone3Light_pow(0,0,50);
 		
 		PLight* p1 = new PLight(cone1Light_pos, cone1Light_pow);
 		PLight* p2 = new PLight(cone2Light_pos, cone2Light_pow);
@@ -463,6 +468,8 @@ public:
 		return hit;
 	}
 
+
+	//TODO: lehet tényleg másik raytrace fv kell a point lights-nak!
 	vec3 trace(Ray ray, int depth = 0) {
 		Hit hit = firstIntersect(ray);
 		float val = 0.2 * (1 + dot(normalize(hit.normal), normalize(ray.dir)));
@@ -479,23 +486,22 @@ public:
 				float cosDelta = dot(hit.normal, halfway);
 				if (cosDelta > 0) outRadiance = outRadiance + light->Le * hit.material->ks * powf(cosDelta, hit.material->shininess);
 			}
+
+
+
 		}
 
-
-		hit = firstIntersect(ray);	// Find visible surface
 		vec3 outRad(0, 0, 0);
 		if (hit.t < 0 || depth >= maxdepth) return outRad;
-		vec3 N = hit.normal;	// normal of the visible surface
+		vec3 N = hit.normal;
 		vec3 outDir;
-		for (Bug *bug : bugs) {	// Direct light source computation
+		for (Bug *bug : bugs) {
 			PLight *light = bug->light;
-			outDir = light->directionOf(hit.position) * (-1);
+			outDir = light->directionOf(hit.position);
 			Hit shadowHit = firstIntersect(Ray(hit.position + N * epsilon, outDir));
 			if (shadowHit.t < epsilon || shadowHit.t > light->distanceOf(hit.position)) {	// if not in shadow
 				double cosThetaL = dot(N, outDir);
-				//outRad = outRad+ /*hit.material->diffuseAlbedo / M_PI * cosThetaL * */light->radianceAt(hit.position);
 				if (cosThetaL >= epsilon) {
-					//outRadiance = outRadiance + /*hit.material->diffuseAlbedo / */M_PI * cosThetaL * light->radianceAt(hit.position);
 					outRad = outRad + hit.material->diffuseAlbedo / M_PI * cosThetaL * light->radianceAt(hit.position);
 				}
 			}
@@ -503,43 +509,6 @@ public:
 
 		return outRadiance + outRad;
 	}
-
-	//vec3 trace(Ray ray, int depth = 0) {
-	//	Hit hit = firstIntersect(ray);	// Find visible surface
-	//	vec3 outRad(0, 0, 0);
-	//	if (hit.t < 0) return outRad;	// If there is no intersection
-
-	//	vec3 N = hit.normal;	// normal of the visible surface
-	//	vec3 outDir;
-	//	for (auto bug : bugs) {	// Direct light source computation
-	//		PLight* light = bug->light;
-	//		outDir = light->directionOf(hit.position);
-	//		Hit shadowHit = firstIntersect(Ray(hit.position + N * epsilon, outDir));
-	//		if (shadowHit.t < epsilon || shadowHit.t > light->distanceOf(hit.position)) {	// if not in shadow
-	//			double cosThetaL = dot(N, outDir);
-	//			if (cosThetaL >= epsilon) {
-	//				outRad = outRad + /*hit.material->diffuseAlbedo / */M_PI * cosThetaL * light->radianceAt(hit.position);
-	//			}
-	//		}
-	//	}
-
-		/*double diffuseSelectProb = hit.material->diffuseAlbedo.average();
-		double mirrorSelectProb = hit.material->mirrorAlbedo.average();*/
-
-		//double rnd = random();	// Russian roulette to find diffuse, mirror or no reflection
-		//if (rnd < diffuseSelectProb) { // diffuse
-		//	double pdf = SampleDiffuse(N, ray.dir, outDir);
-		//	double cosThetaL = dot(N, outDir);
-		//	if (cosThetaL >= epsilon) {
-		//		outRad += trace(Ray(hit.position + N * epsilon, outDir), depth + 1) * hit.material->diffuseAlbedo / M_PI * cosThetaL / pdf / diffuseSelectProb;
-		//	}
-		//}
-		//else if (rnd < diffuseSelectProb + mirrorSelectProb) { // mirror
-		//	double pdf = SampleMirror(N, ray.dir, outDir);
-		//	outRad += trace(Ray(hit.position + N * epsilon, outDir), depth + 1) * hit.material->mirrorAlbedo / pdf / mirrorSelectProb;
-		//}
-	/*	return outRad;
-	}*/
 
 	void mouseClick(int pX, int pY) {
 		//printf("%d, %d\n", pX, pY);
@@ -550,7 +519,6 @@ public:
 
 		Bug* closestBug;
 		float dist = INT_MAX;
-		printf("%lf\n", dist);
 
 		for (Bug* b : bugs) { //ezzel kiválasztjuk a legközelebbi Cone-t
 			float d = dist_3D(b->cone->p, hit.position);
