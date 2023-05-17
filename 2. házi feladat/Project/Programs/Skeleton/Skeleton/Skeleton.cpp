@@ -307,7 +307,7 @@ public:
 		camera.set(eye, lookat, vup, fov);
 
 		La = vec3(0.0f, 0.0f, 0.0f);
-		vec3 lightDirection(0.1,0.1,0.1), Le(1.5f, 1.5f, 1.5f);
+		vec3 lightDirection(0.1,0.1,0.1), Le(1,1,1);
 		lights.push_back(new DLight(lightDirection, Le));
 
 		vec3 kd1(0.3f, 0.3f, 0.3f), ks(1,1,1);
