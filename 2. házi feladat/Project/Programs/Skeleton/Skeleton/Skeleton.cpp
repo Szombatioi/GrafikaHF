@@ -2,8 +2,6 @@
 #include <algorithm>
 
 const float epsilon = 0.0001f;
-//const float epsilon = 0.0001f;
-const int maxdepth = 10;
 //TODO:
 //nyilatkozat
 //kommentek torlese
@@ -86,7 +84,7 @@ struct PLight {
 	vec3 radianceAt(vec3 point) {
 		double distance2 = dot(location - point, location - point);
 		if (distance2 < epsilon) distance2 = epsilon;
-		return power / (distance2 * 8 * M_PI);
+		return (power / (distance2 * 8 * M_PI));
 	}
 };
 
@@ -134,16 +132,12 @@ struct Cone : public Intersectable {
 	Cone(vec3 _p, vec3 _n, float h, float a, Material* mat) : p(_p), n(normalize(_n)), material(mat) { height = h; angle = a;}
 	Hit intersect(const Ray& ray) {
 		Hit hit;
+
+		vec3 start_to_point = ray.start - p;
 		float cos_square = pow(cosf(angle), 2);
-		//float a = pow(dot(ray.dir, n), 2) - dot(ray.dir, ray.dir) * cos_square; //TODO: lehet (dir*n)^2
-		//float b = (dot(ray.dir, ray.start) - dot(ray.dir, p)) * (2 * dot(n, n) - 2 * cos_square);
-		//float c = dot(n, n) * (dot(ray.start, ray.start) - dot(p,p) - 2*dot(ray.start, p)) - (dot(ray.start, ray.start) + dot(p,p) - 2*dot(ray.start, p))*cos_square;
-
-		vec3 co = ray.start - p;
-
-		float a = dot(ray.dir, n) * dot(ray.dir, n) - dot(ray.dir, ray.dir) * cos_square;
-		float b = 2. * (dot(ray.dir, n) * dot(co, n) - dot(ray.dir, co) * cos_square);
-		float c = dot(co, n) * dot(co, n) - dot(co, co) * cos_square;
+		float a = pow(dot(ray.dir, n), 2) - dot(ray.dir, ray.dir) * cos_square;
+		float b = 2.0f * (dot(ray.dir, n) * dot(start_to_point, n) - cos_square * dot(ray.dir, start_to_point)); //todo: lehet p-s kell ide hátulra
+		float c = dot(n, start_to_point)* dot(n, start_to_point) - dot(start_to_point, start_to_point) * cos_square;
 		
 		float discr = b * b - 4.0f * a * c;
 		if (discr < 0) return hit;
@@ -151,14 +145,29 @@ struct Cone : public Intersectable {
 		float t1 = (-b + sqrt_discr) / 2.0f / a;
 		float t2 = (-b - sqrt_discr) / 2.0f / a;
 		if (t1 <= 0 && t2 <= 0) return hit;
-		hit.t = (t2>=0) ? t2 : t1;
+		//hit.t = (t2 >= 0 && t2 <= t1) ? t2 : t1;
+
+		float d1 = dot(ray.start + ray.dir * t1 - p, n);
+		float d2 = dot(ray.start + ray.dir * t2 - p, n);
+		if (t1 > 0.0f && 0.0f <= d1 && d1 <= height) {
+			hit.t = t1;
+		}
+		else if (t2 > 0.0f && 0.0f <= d2 && d2 <= height) {
+			hit.t = t2;
+		}
+
+
+		/*hit.t = t1;
+		if (hit.t < 0.0 || t2 >= 0.0 && t2 <= hit.t) hit.t = t2;
+		if (hit.t < 0.0) return Hit();*/
+
 		/*hit.t = t1;
 		if (hit.t < 0 || t2>0. && t2 < hit.t) hit.t = t2;
 		if (hit.t < 0) return Hit();*/
 
 		vec3 cp = ray.start + hit.t * ray.dir - p;
 		float h = dot(cp, n);
-		if (h <= 0.0 || h >= height) return Hit();
+		if (h < 0.0 || h > height) return Hit();
 
 		
 		vec3 point = ray.start + ray.dir * hit.t;
@@ -378,13 +387,14 @@ public:
 		objects.push_back(new Cube(cubePoints, cubePointIdx, material));
 
 		Cone* c1 = new Cone(vec3(0, 2, 0), vec3(0, -1, 0), 0.2, M_PI / 8, material); //red
-		Cone* c2 = new Cone(vec3(-1, 1, 0), vec3(1,0,0), 0.2, M_PI / 8, material); //green
-		Cone* c3 = new Cone(vec3(0.67, 0.67, -0.03), vec3(0.25, 0.25, 0.25), 0.2, M_PI / 8, material); //blue
+		Cone* c2 = new Cone(vec3(-1, 1.5, 0), vec3(1,0,0), 0.2, M_PI / 8, material); //green
+		//Cone* c3 = new Cone(vec3(0.67, 0.67, -0.03), vec3(0.25, 0.25, 0.25), 0.2, M_PI / 8, material); //blue
+		Cone* c3 = new Cone(vec3(0.064, 0.735, 0.359), vec3(0.577, 0.577, -0.577), 0.2, M_PI / 8, material); //blue	
 
 		float delta = 0.01;
-		PLight* p1 = new PLight(c1->p + c1->n * delta, vec3(0,0,0));
-		PLight* p2 = new PLight(c2->p + c2->n * delta, vec3(0,0,0));
-		PLight* p3 = new PLight(c3->p + c3->n * delta, vec3(0,0,0));
+		PLight* p1 = new PLight(c1->p + c1->n * delta, vec3(150,0,0));
+		PLight* p2 = new PLight(c2->p + c2->n * delta, vec3(0,150,0));
+		PLight* p3 = new PLight(c3->p + c3->n * delta, vec3(0,0,150));
 		coneLights.push_back(p1);
 		coneLights.push_back(p2);
 		coneLights.push_back(p3);
@@ -430,19 +440,16 @@ public:
 	}
 
 
-	//TODO: lehet tényleg másik raytrace fv kell a point lights-nak!
 	vec3 trace(Ray ray, int depth = 0) {
 		Hit hit = firstIntersect(ray);
 		float val = 0.2 * (1 + dot(normalize(hit.normal), normalize(ray.dir)));
 		La = vec3(val,val,val);
 		if (hit.t < 0) return vec3(0.0, 0.0, 0.0);
-		//return hit.normal;
 		vec3 outRadiance = hit.material->ka * La;
 
 		for (DLight* light : lights) {
-			Ray shadowRay(hit.position + hit.normal * epsilon, light->direction);
 			float cosTheta = dot(hit.normal, light->direction);
-			if (cosTheta > 0  && !shadowIntersect(shadowRay)  ) {	// shadow computation
+			if (cosTheta > 0) {
 				outRadiance = outRadiance + light->Le * hit.material->kd * cosTheta;
 				vec3 halfway = normalize(-ray.dir + light->direction);
 				float cosDelta = dot(hit.normal, halfway);
@@ -450,25 +457,21 @@ public:
 			}
 		}
 
+		//float delta = 0.0;
 		vec3 outRad(0, 0, 0);
-		if (hit.t < 0 || depth >= maxdepth) return outRad;
 		vec3 N = hit.normal;
 		vec3 outDir;
 		for (Bug *bug : bugs) {
 			PLight *light = bug->light;
-			outDir = light->directionOf(hit.position + epsilon);
-			//if (dot(outDir, bug->cone->n) < cosf(bug->cone->angle)) {
-				Hit shadowHit = firstIntersect(Ray(hit.position + N * epsilon, outDir));
-				if (shadowHit.t < epsilon || shadowHit.t > light->distanceOf(hit.position + epsilon)) {	// if not in shadow
-					double cosThetaL = dot(N, outDir);
-					//if (cosThetaL >= epsilon) {
-						outRad = outRad + hit.material->diffuseAlbedo / M_PI * cosThetaL * light->radianceAt(hit.position + epsilon);
-					//}
-				}
-			//}
+			outDir = light->directionOf(hit.position + hit.normal * epsilon);
+			Hit shadowHit = firstIntersect(Ray(hit.position + N * epsilon, outDir));
+			if (shadowHit.t < 0. || shadowHit.t > light->distanceOf(hit.position + hit.normal * epsilon)) {
+				double cosThetaL = dot(N, outDir);
+				outRad = outRad + hit.material->diffuseAlbedo / M_PI * cosThetaL * light->radianceAt(hit.position + hit.normal * epsilon);
+			}
 		}
 
-		return outRadiance + outRad;
+		return outRad + outRadiance;
 	}
 
 	void mouseClick(int pX, int pY) {
@@ -477,6 +480,7 @@ public:
 
 		Ray ray = camera.getRay(pX, pY);
 		Hit hit = clickTrace(ray);
+		printf("%lf,%lf,%lf\n%lf,%lf,%lf\n", hit.position.x, hit.position.y, hit.position.z, hit.normal.x, hit.normal.y, hit.normal.z);
 
 		Bug* closestBug;
 		float dist = INT_MAX;
