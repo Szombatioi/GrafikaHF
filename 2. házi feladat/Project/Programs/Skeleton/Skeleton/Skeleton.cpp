@@ -37,7 +37,7 @@ const float epsilon = 0.0001f, delta = 0.01;
 
 float dist_3D(vec3 p1, vec3 p2) {
 	vec3 v = p2 - p1;
-	return sqrt(dot(v,v));
+	return sqrt(dot(v, v));
 }
 
 //Forras: Szirmay-Kalos Laszlo kodjai alapjan
@@ -78,7 +78,7 @@ public:
 	void set(vec3 _eye, vec3 _lookat, vec3 vup, float _fov) {
 		eye = _eye; lookat = _lookat, fov = _fov;
 		vec3 w = eye - lookat;
-		float windowsSize = length(w) * tanf(fov/2);
+		float windowsSize = length(w) * tanf(fov / 2);
 		right = normalize(cross(vup, w)) * windowsSize;
 		up = normalize(cross(w, right)) * windowsSize;
 	}
@@ -91,7 +91,7 @@ public:
 
 //Forras: Szirmay-Kalos Laszlo kodjai alapjan
 struct DLight {
-	vec3 direction, Le; //ir�ny, intenzit�s
+	vec3 direction, Le;
 	DLight(vec3 _direction, vec3 _Le) {
 		direction = normalize(_direction);
 		Le = _Le;
@@ -120,12 +120,12 @@ struct PLight {
 	}
 };
 
-class Triangle : public Intersectable{
+class Triangle : public Intersectable {
 	vec3 A, B, C;
 	vec3 normal;
 	Material* material;
 public:
-	Triangle(std::vector<vec3> _points, Material* _material){
+	Triangle(std::vector<vec3> _points, Material* _material) {
 		A = _points[0];
 		B = _points[1];
 		C = _points[2];
@@ -134,7 +134,7 @@ public:
 	}
 
 	Triangle(vec3 _A, vec3 _B, vec3 _C, Material* _material) {
-		std::vector<vec3> p = {_A,_B,_C};
+		std::vector<vec3> p = { _A,_B,_C };
 		Triangle(p, _material);
 	}
 
@@ -145,10 +145,10 @@ public:
 		if (t < 0) return hit;
 		vec3 p = ray.start + t * ray.dir;
 
-		if (dot(cross(B-A,p-A),normal) <= 0) return hit;
-		if (dot(cross(C-B,p-B),normal) <= 0) return hit;
-		if (dot(cross(A-C,p-C),normal) <= 0) return hit;
-		
+		if (dot(cross(B - A, p - A), normal) <= 0) return hit;
+		if (dot(cross(C - B, p - B), normal) <= 0) return hit;
+		if (dot(cross(A - C, p - C), normal) <= 0) return hit;
+
 		hit.normal = normal;
 		hit.position = p;
 		hit.material = material;
@@ -162,7 +162,7 @@ struct Cone : public Intersectable {
 	float height, angle;
 	Material* material;
 
-	Cone(vec3 _p, vec3 _n, float h, float a, Material* mat) : p(_p), n(normalize(_n)), material(mat) { height = h; angle = a;}
+	Cone(vec3 _p, vec3 _n, float h, float a, Material* mat) : p(_p), n(normalize(_n)), material(mat) { height = h; angle = a; }
 	Hit intersect(const Ray& ray) {
 		Hit hit;
 
@@ -170,8 +170,8 @@ struct Cone : public Intersectable {
 		float cos_square = pow(cosf(angle), 2);
 		float a = pow(dot(ray.dir, n), 2) - dot(ray.dir, ray.dir) * cos_square;
 		float b = 2.0f * (dot(ray.dir, n) * dot(start_to_point, n) - cos_square * dot(ray.dir, start_to_point));
-		float c = dot(n, start_to_point)* dot(n, start_to_point) - dot(start_to_point, start_to_point) * cos_square;
-		
+		float c = pow(dot(n, start_to_point), 2) - dot(start_to_point, start_to_point) * cos_square;
+
 		float discr = b * b - 4.0f * a * c;
 		if (discr < 0) return hit;
 		float sqrt_discr = sqrtf(discr);
@@ -194,7 +194,7 @@ struct Cone : public Intersectable {
 
 		vec3 point = ray.start + ray.dir * hit.t;
 		hit.position = point;
-		hit.normal = normalize(2*dot((point - p),n)*n - 2*(point - p)*cos_square);
+		hit.normal = normalize(2 * dot((point - p), n) * n - 2 * (point - p) * cos_square);
 		hit.material = material;
 		return hit;
 	}
@@ -212,7 +212,7 @@ struct Bug {
 };
 
 class Square : public Intersectable {
-	std::vector<Triangle> triangles; //2
+	std::vector<Triangle> triangles;
 public:
 	Square(vec3 A, vec3 B, vec3 C, vec3 D, Material* mat) {
 		triangles = std::vector<Triangle>();
@@ -234,11 +234,11 @@ public:
 class Cube : public Intersectable {
 	std::vector<Square> sides;
 public:
-	
-	Cube(std::vector<vec3> points, std::vector<int> panes, Material *material) {
+
+	Cube(std::vector<vec3> points, std::vector<int> panes, Material* material) {
 		sides = std::vector<Square>();
 		for (int i = 0; i < panes.size(); i += 4) {
-			sides.push_back(Square(points[panes[i]], points[panes[i + 1]], points[panes[i + 2]], points[panes[i+3]], material));
+			sides.push_back(Square(points[panes[i]], points[panes[i + 1]], points[panes[i + 2]], points[panes[i + 3]], material));
 		}
 	}
 
@@ -261,7 +261,7 @@ public:
 	Icosahedron(std::vector<vec3> points, std::vector<int> panes, Material* material) {
 		sides = std::vector<Square>();
 		for (int i = 0; i < panes.size(); i += 4) {
-			sides.push_back(Square(points[panes[i]], points[panes[i + 1]], points[panes[i + 2]], points[panes[i+3]], material));
+			sides.push_back(Square(points[panes[i]], points[panes[i + 1]], points[panes[i + 2]], points[panes[i + 3]], material));
 		}
 	}
 	Hit intersect(const Ray& ray) {
@@ -302,31 +302,31 @@ class Scene {
 	vec3 La;
 public:
 	void build() {
-		vec3 eye = vec3(2.5f, 1.5f, 2.5f), vup = vec3(0, 1, 0), lookat = vec3(0,0.8,0);
+		vec3 eye = vec3(2.5f, 1.5f, 2.5f), vup = vec3(0, 1, 0), lookat = vec3(0, 0.8, 0);
 		float fov = 45 * M_PI / 180;
 		camera.set(eye, lookat, vup, fov);
 
 		La = vec3(0.0f, 0.0f, 0.0f);
-		vec3 lightDirection(0.1,0.1,0.1), Le(1,1,1);
+		vec3 lightDirection(0.1, 0.1, 0.1), Le(1.5f, 1.5f, 1.5f);
 		lights.push_back(new DLight(lightDirection, Le));
 
-		vec3 kd1(0.3f, 0.3f, 0.3f), ks(1,1,1);
-		Material* material = new Material(kd1, ks, 75, vec3(1,1,1));
+		vec3 kd1(0.3f, 0.3f, 0.3f), ks(1, 1, 1);
+		Material* material = new Material(kd1, ks, 75, vec3(1, 1, 1));
 
 		vec3 A, B, C, D, E, F, G, H, I, J, K, L;
 
 		A = vec3(-0.25f, 0.925f, 0.235f),
-		B = vec3(0.175f, 0.765f, 0.5f),
-		C = vec3(0.175f, 0.235f, 0.5f),
-		D = vec3(-0.675f, 0.235f, 0.5f),
-		E = vec3(-0.675f, 0.765f, 0.5f),
-		F = vec3(-0.515f, 0.5f, 0.925f),
-		G = vec3(0.015f, 0.5f, 0.925f),
-		H = vec3(0.015f, 0.5f, 0.075f),
-		I = vec3(-0.515f, 0.5f, 0.075f),
-		J = vec3(-0.25f, 0.075f , 0.235f),
-		K = vec3(-0.25f, 0.075f, 0.765f),
-		L = vec3(-0.25f, 0.925f, 0.765f);		
+			B = vec3(0.175f, 0.765f, 0.5f),
+			C = vec3(0.175f, 0.235f, 0.5f),
+			D = vec3(-0.675f, 0.235f, 0.5f),
+			E = vec3(-0.675f, 0.765f, 0.5f),
+			F = vec3(-0.515f, 0.5f, 0.925f),
+			G = vec3(0.015f, 0.5f, 0.925f),
+			H = vec3(0.015f, 0.5f, 0.075f),
+			I = vec3(-0.515f, 0.5f, 0.075f),
+			J = vec3(-0.25f, 0.075f, 0.235f),
+			K = vec3(-0.25f, 0.075f, 0.765f),
+			L = vec3(-0.25f, 0.925f, 0.765f);
 		std::vector<vec3> icosaPoints = { A,B,C,D,E,F,G,H,I,J,K,L };
 		std::vector<int> icosaPointsIdx = {
 			6,1,2,7,
@@ -341,15 +341,15 @@ public:
 			4,5,3,10
 		};
 		objects.push_back(new Icosahedron(icosaPoints, icosaPointsIdx, material));
-		
+
 
 		A = vec3(1.0f, 0.5f, -0.2f),
-		B = vec3(0.5f, 0.0f, -0.2f),
-		C = vec3(0.0f, 0.5f, -0.2f),
-		D = vec3(0.5f, 1.0f, -0.2f),
-		E = vec3(0.5f, 0.5f, 0.3f),	
-		F = vec3(0.5f, 0.5f, -0.8f);
-		std::vector<vec3> octaPoints = {A,B,C,D,E,F};
+			B = vec3(0.5f, 0.0f, -0.2f),
+			C = vec3(0.0f, 0.5f, -0.2f),
+			D = vec3(0.5f, 1.0f, -0.2f),
+			E = vec3(0.5f, 0.5f, 0.3f),
+			F = vec3(0.5f, 0.5f, -0.8f);
+		std::vector<vec3> octaPoints = { A,B,C,D,E,F };
 		std::vector<int> octaPointsIdx = {
 			0,1,4,2,
 			2,3,4,0,
@@ -360,13 +360,13 @@ public:
 
 
 		A = vec3(-1.0, 0.0, -1.0),
-		B = vec3(-1.0, 2.0, -1.0),
-		C = vec3(-1.0, 0.0, 1.0),
-		D = vec3(-1.0, 2.0, 1.0),
-		E = vec3(1.0, 0.0, -1.0),
-		F = vec3(1.0, 2.0, -1.0),
-		G = vec3(1.0, 0.0, 1.0),
-		H = vec3(1.0, 2.0, 1.0);
+			B = vec3(-1.0, 2.0, -1.0),
+			C = vec3(-1.0, 0.0, 1.0),
+			D = vec3(-1.0, 2.0, 1.0),
+			E = vec3(1.0, 0.0, -1.0),
+			F = vec3(1.0, 2.0, -1.0),
+			G = vec3(1.0, 0.0, 1.0),
+			H = vec3(1.0, 2.0, 1.0);
 		std::vector<vec3> cubePoints = { A,B,C,D,E,F,G,H };
 		std::vector<int> cubePointIdx = {
 			4,6,0,2,
@@ -378,13 +378,13 @@ public:
 		};
 		objects.push_back(new Cube(cubePoints, cubePointIdx, material));
 
-		Cone* c1 = new Cone(vec3(0, 2, 0), vec3(0, -1, 0), 0.2, M_PI / 8, material); //red
-		Cone* c2 = new Cone(vec3(-1, 1.5, 0), vec3(1,0,0), 0.2, M_PI / 8, material); //green
-		Cone* c3 = new Cone(vec3(0.064, 0.735, 0.359), vec3(0.577, 0.577, -0.577), 0.2, M_PI / 8, material); //blue	
+		Cone* c1 = new Cone(vec3(0, 2, 0), vec3(0, -1, 0), 0.2, M_PI / 8, material);
+		Cone* c2 = new Cone(vec3(-1, 1.5, 0), vec3(1, 0, 0), 0.2, M_PI / 8, material);
+		Cone* c3 = new Cone(vec3(0.064, 0.735, 0.359), vec3(0.577, 0.577, -0.577), 0.2, M_PI / 8, material);
 
-		PLight* p1 = new PLight(c1->p + c1->n * delta, vec3(150,0,0));
-		PLight* p2 = new PLight(c2->p + c2->n * delta, vec3(0,150,0));
-		PLight* p3 = new PLight(c3->p + c3->n * delta, vec3(0,0,150));
+		PLight* p1 = new PLight(c1->p + c1->n * delta, vec3(150, 0, 0));
+		PLight* p2 = new PLight(c2->p + c2->n * delta, vec3(0, 150, 0));
+		PLight* p3 = new PLight(c3->p + c3->n * delta, vec3(0, 0, 150));
 
 		objects.push_back(c1);
 		objects.push_back(c2);
@@ -399,7 +399,7 @@ public:
 		for (int Y = 0; Y < windowHeight; Y++) {
 #pragma omp parallel for
 			for (int X = 0; X < windowWidth; X++) {
-				vec3 color = trace(camera.getRay(X, Y)); //minden pixelnek meghat�rozzuk a sz�n�t
+				vec3 color = trace(camera.getRay(X, Y));
 				image[Y * windowWidth + X] = vec4(color.x, color.y, color.z, 1);
 			}
 		}
@@ -417,18 +417,18 @@ public:
 		if (dot(ray.dir, bestHit.normal) > 0) bestHit.normal = bestHit.normal * (-1);
 		return bestHit;
 	}
-	
+
 	//Forras: Szirmay-Kalos Laszlo kodjai alapjan
 	bool shadowIntersect(Ray ray) {
 		for (Intersectable* object : objects) if (object->intersect(ray).t > 0) return true;
 		return false;
 	}
 
-
+	//Forras: Szirmay-Kalos Laszlo kodjai alapjan
 	vec3 trace(Ray ray, int depth = 0) {
 		Hit hit = firstIntersect(ray);
 		float val = 0.2 * (1 + dot(normalize(hit.normal), normalize(ray.dir)));
-		La = vec3(val,val,val);
+		La = vec3(val, val, val);
 		if (hit.t < 0) return vec3(0.0, 0.0, 0.0);
 		vec3 outRadiance = hit.material->ka * La;
 
@@ -445,8 +445,8 @@ public:
 		vec3 outRad(0, 0, 0);
 		vec3 N = hit.normal;
 		vec3 outDir;
-		for (Bug *bug : bugs) {
-			PLight *light = bug->light;
+		for (Bug* bug : bugs) {
+			PLight* light = bug->light;
 			outDir = light->directionOf(hit.position + hit.normal * epsilon);
 			Hit shadowHit = firstIntersect(Ray(hit.position + N * epsilon, outDir));
 			if (shadowHit.t < 0.0f || shadowHit.t > light->distanceOf(hit.position + hit.normal * epsilon)) {
@@ -458,12 +458,25 @@ public:
 		return outRad + outRadiance;
 	}
 
+	Hit mouseIntersect(Ray ray) {
+		Hit bestHit;
+		for (Intersectable* obj : objects) {
+			if ((Cone)(*obj) == obj) continue;
+			Hit hit = obj->intersect(ray);
+			if (hit.t > 0 && (bestHit.t < 0 || bestHit.t > hit.t)) {
+				bestHit = hit;
+			}
+		}
+		if (dot(ray.dir, bestHit.normal) > 0) bestHit.normal = bestHit.normal * (-1);
+		return bestHit;
+	}
+
 	void mouseClick(int pX, int pY) {
 		Ray ray = camera.getRay(pX, pY);
 		Hit hit = firstIntersect(ray);
 
 		Bug* closestBug;
-		float dist = INT_MAX;
+		float dist = 99999999.0f;
 
 		for (Bug* b : bugs) {
 			float d = dist_3D(b->cone->p, hit.position);
@@ -480,7 +493,7 @@ GPUProgram gpuProgram;
 Scene scene;
 
 //Forras: Szirmay-Kalos Laszlo kodjai alapjan
-const char *vertexSource = R"(
+const char* vertexSource = R"(
 	#version 330
     precision highp float;
 
@@ -494,7 +507,7 @@ const char *vertexSource = R"(
 )";
 
 //Forras: Szirmay-Kalos Laszlo kodjai alapjan
-const char *fragmentSource = R"(
+const char* fragmentSource = R"(
 	#version 330
     precision highp float;
 
@@ -513,7 +526,7 @@ class FullScreenTexturedQuad {
 	Texture texture;
 public:
 	FullScreenTexturedQuad(int windowWidth, int windowHeight, std::vector<vec4>& image)
-		: texture(windowWidth, windowHeight, image) 
+		: texture(windowWidth, windowHeight, image)
 	{
 		glGenVertexArrays(1, &vao);
 		glBindVertexArray(vao);
@@ -535,9 +548,9 @@ public:
 	}
 };
 
-FullScreenTexturedQuad * fullScreenTexturedQuad;
+FullScreenTexturedQuad* fullScreenTexturedQuad;
 
-void onInitialization(){
+void onInitialization() {
 	glViewport(0, 0, windowWidth, windowHeight);
 	scene.build();
 	std::vector<vec4> image(windowWidth * windowHeight);
@@ -546,12 +559,12 @@ void onInitialization(){
 	gpuProgram.create(vertexSource, fragmentSource, "fragmentColor");
 }
 
-void onDisplay(){
+void onDisplay() {
 	fullScreenTexturedQuad->Draw();
 	glutSwapBuffers();
 }
 
-void onMouse(int button, int state, int pX, int pY){
+void onMouse(int button, int state, int pX, int pY) {
 	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
 		scene.mouseClick(pX, windowHeight - pY);
 		std::vector<vec4> image(windowWidth * windowHeight);
@@ -563,7 +576,7 @@ void onMouse(int button, int state, int pX, int pY){
 
 	glutPostRedisplay();
 }
-void onKeyboard(unsigned char key, int pX, int pY){}
-void onKeyboardUp(unsigned char key, int pX, int pY){}
-void onMouseMotion(int pX, int pY){}
-void onIdle(){}
+void onKeyboard(unsigned char key, int pX, int pY) {}
+void onKeyboardUp(unsigned char key, int pX, int pY) {}
+void onMouseMotion(int pX, int pY) {}
+void onIdle() {}
